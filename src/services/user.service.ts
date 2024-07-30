@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserEntity } from 'src/entities/user.entity';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(
@@ -50,6 +50,17 @@ export class UserService {
       where: { id: userId },
       relations: ['roles', 'roles.permissions']
     });
+  }
+
+  async findOne(username: string) {
+    return this.userRepository.findOne({
+      where: { username: username }
+    });
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10; // You can adjust this value based on your security needs
+    return await bcrypt.hash(password, saltRounds);
   }
 
   // Thêm các method khác nếu cần

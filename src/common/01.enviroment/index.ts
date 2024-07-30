@@ -6,5 +6,6 @@ export const enviroment = {
     dbUser: process.env.DB_USER,
     dbPw: process.env.DB_PW,
     dbSynchronize: process.env.DB_SYNCHRONIZE === 'true',
-    jwtSecretATKey: process.env.JWT_SECRET
+    jwtSecretATKey: process.env.JWT_SECRET,
+    portApi: process.env.PORT_API
 }

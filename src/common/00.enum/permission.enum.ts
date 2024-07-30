@@ -17,5 +17,5 @@ export const userAdmin : CreateUserDto = {
     lastName: 'Nguyễn',
     username: 'russiaVictory',
     address: 'Hà Nội',
-    password: 'Aa123@'
+    password: '$2b$10$fHayvM7B7k6OpWMUESZfwOVJUpWwR71MUnA20td.N27vM20Og8wqm'
 } as any;

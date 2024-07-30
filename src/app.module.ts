@@ -9,7 +9,7 @@ import { enviroment } from './common/01.enviroment';
 import { coreStrategy } from './strategies/index';
 import { RouterModule, Routes } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { expiresIn } from './common/00.enum';
+import { expiresIn, jwtConstants } from './common/00.enum';
 
 const {
   dbHost,
@@ -48,13 +48,10 @@ const entities = [...myWebApiEntities];
       timezone: 'local',
       cache: false,
   }),
-  JwtModule.registerAsync({
-    imports: [ConfigModule],
-    useFactory: async (configService: ConfigService) => ({
-      secret: configService.get<string>('JWT_SECRET'),
-      signOptions: { expiresIn: '1h' },
-    }),
-    inject: [ConfigService],
+  JwtModule.register({
+    global: true,
+    secret: jwtConstants.secret,
+    signOptions: { expiresIn: '60s' },
   }),
   TypeOrmModule.forFeature(entities),
     ...modules

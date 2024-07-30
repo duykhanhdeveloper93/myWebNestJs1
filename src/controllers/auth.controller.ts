@@ -1,17 +1,23 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards,HttpCode ,HttpStatus, Get,Request } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { Request } from 'express';
+import { AuthGuard } from 'src/guards/jwt-auth.guard';
+import { LoginDto } from 'src/dtos/auth.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+
+  @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Req() req: Request) {
-    return this.authService.login(req.user);
+  signIn(@Body() signInDto: LoginDto) {
+    return this.authService.signIn(signInDto.username, signInDto.password);
   }
 
-  // Thêm các API khác nếu cần
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
+  
 }

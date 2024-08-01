@@ -15,20 +15,20 @@ import {
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const request = context.switchToHttp().getRequest();
       const token = this.extractTokenFromHeader(request);
+      const usr = request.headers['u-s-r'];
+      const clientId = request.headers['client-id'];
+
       console.log(token);
-      if (!token) {
-        throw new UnauthorizedException();
+      if (!token || !usr || !clientId) {
+        throw new UnauthorizedException('Missing authentication headers');
       }
       try {
-        const payload = await this.jwtService.verifyAsync(
-          token,
-          {
-            secret: jwtConstants.secret
-          }
-        );
-        // 💡 We're assigning the payload to the request object here
-        // so that we can access it in our route handlers
+        const payload = await this.jwtService.verifyAsync(token, {
+          secret: jwtConstants.secret,
+        });
         request['user'] = payload;
+        request['usr'] = usr;
+        request['clientId'] = clientId;
       } catch {
         throw new UnauthorizedException();
       }

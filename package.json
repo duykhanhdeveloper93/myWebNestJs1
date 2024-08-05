@@ -21,6 +21,7 @@
     "serve:run-dev": "env-cmd -e development nest start --watch"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.0.0",
@@ -28,8 +29,11 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
+    "@types/cache-manager": "^4.0.6",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "cache-manager-redis": "^0.6.0",
+    "cache-manager-redis-store": "^3.0.1",
     "connect-typeorm": "^2.0.0",
     "env-cmd": "^10.1.0",
     "express-session": "^1.18.0",

@@ -1,8 +1,9 @@
 import {ActivedTypeEnum,AgentStateMessage,CallTypeEnum,ChatAgentState,DevideTypeEnum,GenderEnum,HeadersKeyEnum} from './00.enum'
 
 
-export * from './00.enum'
+export * from './02.environment'
 
+export * from './00.enum'
 
 
 export const commonProviders = [

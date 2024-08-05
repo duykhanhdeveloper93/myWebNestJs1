@@ -6,12 +6,14 @@ import { jwtConstants } from 'src/common/00.enum/consts';
 import { CRequest } from './base.service.type';
 import { HeadersKeyEnum } from 'src/common/00.enum/header.enum';
 import { CIncomingHttpHeaders } from 'src/common/04.types/http-request';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -32,42 +34,33 @@ export class AuthService {
 
   async signIn(username: string, pass: string, options: { request: CRequest }): Promise<any> {
 
-    const token = this.extractTokenFromHeader(options.request);
 
-    const headers = options.request.headers as CIncomingHttpHeaders;
 
-    console.log(headers)
-
-    console.log(options.request?.user)
-    if (token) {
-      try {
-        // Xác thực access_token
-        const payload = await this.jwtService.verifyAsync(token, {
-          secret: jwtConstants.secret,
-        });
-        // Nếu token hợp lệ, trả về thông báo người dùng đã đăng nhập
+    const user: any = await this.userService.findByUsername(username);
+    
+      const isPasswordMatching = await bcrypt.compare(pass, user.password );
+      // const passHash = await this.userService.hashPassword(pass);
+      if (!isPasswordMatching) {
+  
         return {
-          message: "Người dùng đã đăng nhập",
-          access_token: token,
-        };
-      } catch (e) {
-        // Token không hợp lệ, tiếp tục quá trình đăng nhập
+          message: "Mật khẩu hoặc username không đúng"
+        }
       }
-    }
-    const user = await this.userService.findOne(username);
-    const isPasswordMatching = await bcrypt.compare(pass, user.password);
-    const passHash = await this.userService.hashPassword(pass);
-    if (!isPasswordMatching) {
+  
+      const payload = { sub: user.id, username: user.username };
+  
+      const payloadGenKey = {
+        id: user.id,
+        name: user.name,
+        loginName: user.username,
+      };
+      const token = this.tokenService.generateKey(payloadGenKey);
+    
+    return token;
 
-      return {
-        message: "Mật khẩu hoặc username không đúng"
-      }
-    }
-
-    const payload = { sub: user.id, username: user.username };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+    // return {
+    //   access_token: await this.jwtService.signAsync(payload),
+    // };
   }
 
   private extractTokenFromHeader(request: any): string | undefined {

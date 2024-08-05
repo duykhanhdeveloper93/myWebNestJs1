@@ -5,7 +5,7 @@ import { myWebApiControllers } from './controllers';
 import { myWebApiEntities } from './entities';
 import { coreServices } from './services';
 import { CoreModule } from './core.module';
-import { enviroment } from './common/01.enviroment';
+import { environment } from './common/02.environment';
 import { coreStrategy } from './strategies/index';
 import { RouterModule, Routes } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
@@ -19,7 +19,7 @@ const {
   dbType,
   dbUser,
   dbSynchronize
-} = enviroment;
+} = environment;
 
 const routes: Routes = [
   {

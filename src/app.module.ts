@@ -10,7 +10,8 @@ import { coreStrategy } from './strategies/index';
 import { RouterModule, Routes } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { expiresIn, jwtConstants } from './common/00.enum';
-
+import { CacheModule } from '@nestjs/cache-manager';
+import redisStore from 'cache-manager-redis-store';
 const {
   dbHost,
   dbName,
@@ -28,10 +29,26 @@ const routes: Routes = [
   },
 ];
 
+
+
+
 const modules = [CoreModule] as any[];
 
 const entities = [...myWebApiEntities];
 
+if (environment.enableRedis) {
+  modules.push(
+      CacheModule.register({
+          isGlobal: true,
+          store: redisStore,
+          host: environment.redisHost,
+          port: environment.redisPort,
+          username: environment.redisUsername,
+          password: environment.redisPw,
+          no_ready_check: true,
+      }),
+  );
+}
 @Module({
   imports: [
     RouterModule.register(routes),

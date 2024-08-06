@@ -8,5 +8,10 @@ export const environment = {
     dbSynchronize: process.env.DB_SYNCHRONIZE === 'true',
     jwtSecretATKey: process.env.JWT_SECRET,
     jwtSecretRTKey: process.env.JWT_RTACCESS_KEY,
-    portApi: process.env.PORT_API
+    portApi: process.env.PORT_API,
+    enableRedis: process.env.ENABLE_REDIS === 'true',
+    redisHost: process.env.REDIS_HOST,
+    redisPort: parseInt(process.env.REDIS_PORT),
+    redisUsername: process.env.REDIS_USER_NAME,
+    redisPw: process.env.REDIS_PW,
 }

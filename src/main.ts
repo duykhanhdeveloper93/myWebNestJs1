@@ -33,6 +33,8 @@ async function bootstrap() {
   // Cấu hình cái này để chạy
   app.enableCors({
     origin: getCORSUrl(),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
     credentials: true,
   });
   //#endregion

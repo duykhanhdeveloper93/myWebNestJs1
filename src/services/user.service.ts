@@ -4,6 +4,19 @@ import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { FindManyOptions } from 'typeorm';
+import { first } from 'lodash';
+
+
+export interface ICurrentUser {
+  id: number;
+  name: string;
+  isSys?: number;
+  loginName: string;
+  clientId?: string;
+}
+
+
 @Injectable()
 export class UserService {
   constructor(
@@ -38,12 +51,22 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async findByUsername(username: string) {
-    return this.userRepository.findOne({
-      where: { username },
-      relations: ['roles', 'roles.permissions']
+  async findByUsername(username: string, options?: Omit<FindManyOptions<UserEntity>, 'where'>) {
+    const users = await this.userRepository.find({
+        ...options,
+        select: {
+            id: true,
+            username: true,
+            ...options.select,
+        },
+        where: {
+          username,
+        },
     });
-  }
+    return first(users);
+}
+
+
 
   async findRolesByUser(userId: number) {
     return this.userRepository.findOne({

@@ -14,4 +14,7 @@ export const environment = {
     redisPort: parseInt(process.env.REDIS_PORT),
     redisUsername: process.env.REDIS_USER_NAME,
     redisPw: process.env.REDIS_PW,
+    spaUrl: process.env.SPA_URL,
+    spaDevUrl: process.env.DEV_SPA_URL,
+    originUrls: process.env.ORIGIN_URLS?.split(';') || [],
 }

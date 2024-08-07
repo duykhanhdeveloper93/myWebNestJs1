@@ -6,9 +6,10 @@ import { Request } from 'express';
 
 
 
-import { environment, expiresIn, jwtConstants, redisConsts, refreshTokenExpiresIn } from 'src/common';
+import { HeadersKeyEnum, environment, expiresIn, jwtConstants, redisConsts, refreshTokenExpiresIn} from 'src/common';
 import { RCacheManager } from './CacheManager';
-
+import {CIncomingHttpHeaders } from '../common/04.types';
+import { ICurrentUser } from './user.service';
 @Injectable()
 export class TokenService {
     constructor(private jwtService: JwtService,
@@ -46,8 +47,8 @@ export class TokenService {
      * @returns
      */
     async generateKey(item: any) {
-        const { id, loginName, name } = item;
-        const user = { id, loginName, name } as any;
+        const { id, username, name } = item;
+        const user = { id, username, name } as any;
         const clientId = item.clientId || uuidv4();
         const [access_token, refresh_token] = await Promise.all([
             this.jwtService.signAsync(user, {
@@ -110,27 +111,27 @@ export class TokenService {
     //     return result;
     // }
 
-    // async loggedIn(request: Request) {
-    //     const headers = request.headers as CIncomingHttpHeaders;
-    //     const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
-    //     const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
-    //     const accessToken = headers[HeadersKeyEnum.AS];
+    async loggedIn(request: Request) {
+        const headers = request.headers as CIncomingHttpHeaders;
+        const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
+        const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
+        const accessToken = headers[HeadersKeyEnum.AS];
 
-    //     if (!accessToken || !refreshToken) return false;
+        if (!accessToken || !refreshToken) return false;
 
-    //     try {
-    //         await Promise.all([
-    //             this.jwtService.verifyAsync<ICurrentUser>(refreshToken, {
-    //                 secret: environment.jwtSecretRTKey,
-    //             }),
-    //             this.jwtService.verifyAsync<ICurrentUser>(accessToken, {
-    //                 secret: environment.jwtSecretATKey,
-    //             }),
-    //         ]);
+        try {
+            await Promise.all([
+                this.jwtService.verifyAsync<ICurrentUser>(refreshToken, {
+                    secret: environment.jwtSecretRTKey,
+                }),
+                this.jwtService.verifyAsync<ICurrentUser>(accessToken, {
+                    secret: environment.jwtSecretATKey,
+                }),
+            ]);
 
-    //         return true;
-    //     } catch {
-    //         return false;
-    //     }
-    // }
+            return true;
+        } catch {
+            return false;
+        }
+    }
 }

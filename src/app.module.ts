@@ -11,7 +11,7 @@ import { RouterModule, Routes } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { expiresIn, jwtConstants } from './common/00.enum';
 import { CacheModule } from '@nestjs/cache-manager';
-import redisStore from 'cache-manager-redis-store';
+import * as redisStore from 'cache-manager-redis-store';
 const {
   dbHost,
   dbName,

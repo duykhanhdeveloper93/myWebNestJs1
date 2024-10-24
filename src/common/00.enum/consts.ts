@@ -62,6 +62,8 @@ export const msgSuccess = {
     message: 'success',
 };
 
+export const userNamePattern = /^[a-zA-Z0-9_]{3,32}$/
+
 export const imageExtensions = [
     //#region image
     'jpg',

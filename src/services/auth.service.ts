@@ -55,11 +55,12 @@ export class AuthService {
       },
       take: 1,
     });
-
+    console.log("isPasswordMatching" + 1)
     if (!user) {
       throw new BadRequestException(ResponseCodeEnum.NOT_EXIST_USER);
     }
     const isPasswordMatching = await bcrypt.compare(pass, user.password);
+    console.log("isPasswordMatching" + 1)
     // const passHash = await this.userService.hashPassword(pass);
     if (!isPasswordMatching) {
       return {

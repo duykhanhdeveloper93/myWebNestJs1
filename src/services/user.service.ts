@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { FindManyOptions } from 'typeorm';
+import { DataSource, FindManyOptions } from 'typeorm';
 import { first } from 'lodash';
+import { BaseService } from './base.service';
+import { CRequest } from './base.service.type';
+import { NJRS_REQUEST } from 'nj-request-scope';
+import { REQUEST } from '@nestjs/core';
 
 
 export interface ICurrentUser {
@@ -18,11 +22,15 @@ export interface ICurrentUser {
 
 
 @Injectable()
-export class UserService {
+export class UserService extends BaseService<UserEntity, UserRepository> {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: UserRepository,
-  ) {}
+    private dataSource: DataSource,
+    @Inject(REQUEST) request: CRequest,
+  ) {
+    super(request, userRepository);
+  }
 
   async findAll() {
     return this.userRepository.find({ relations: ['roles', 'roles.permissions'] });
@@ -40,16 +48,30 @@ export class UserService {
     
   }
 
+  async addNewUser(createUserDto: CreateUserDto) {
+    const saltRounds = 10; // Độ phức tạp của mã hóa
+    const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
+    console.log("hashedPassword" + hashedPassword)
+    const currentUser = this.getCurrentUser();
+    let userEntity = new UserEntity();
+    userEntity.firstName = createUserDto.firstName;
+    userEntity.lastName = createUserDto.lastName;
+    userEntity.username = createUserDto.username;
+    userEntity.address = createUserDto.address;
+    userEntity.password = hashedPassword;
+    userEntity.createdAt = new Date();
+    userEntity.createdBy = currentUser;
+    
+    await this.dataSource.getRepository(UserEntity).save(userEntity);
+  }
+
+
   async create(createUserDto: CreateUserDto, currentUser: UserEntity) {
     const user = this.userRepository.create(createUserDto);
     return this.userRepository.save(user);
   }
 
-  async update(id: number, updateUserDto: Partial<CreateUserDto>, modifiedBy: string) {
-    const user = await this.userRepository.findOneBy({ id });
-    Object.assign(user, updateUserDto);
-    return this.userRepository.save(user);
-  }
+
 
   async findByUsername(username: string, options?: Omit<FindManyOptions<UserEntity>, 'where'>) {
     const users = await this.userRepository.find({

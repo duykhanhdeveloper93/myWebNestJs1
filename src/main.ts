@@ -17,33 +17,35 @@ function getCORSUrl() {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  try {
+    const app = await NestFactory.create(AppModule);
 
-  const permissionService = app.get(PermissionService);
-  await permissionService.seedPermissions(); // Khởi tạo dữ liệu permissions
+    const permissionService = app.get(PermissionService);
+    await permissionService.seedPermissions(); // Khởi tạo dữ liệu permissions
 
-  const userService = app.get(UserService);
+    const userService = app.get(UserService);
+    await userService.addNewUser(userAdmin); // Khởi tạo root user
 
-  await userService.createRootUser(userAdmin); // Khởi tạo dữ liệu permissions
+    const globalPrefix = 'api/v1';
+    app.setGlobalPrefix(globalPrefix);
 
-  const globalPrefix = 'api/v1';
-  app.setGlobalPrefix(globalPrefix);
+    //#region enable cors
+    app.enableCors({
+      origin: getCORSUrl(),
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      allowedHeaders: 'Content-Type, Accept, Authorization',
+      credentials: true,
+    });
+    //#endregion
 
-  //#region enable cors
-  // Cấu hình cái này để chạy
-  app.enableCors({
-    origin: getCORSUrl(),
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-    credentials: true,
-  });
-  //#endregion
-
-  const port = process.env.PORT_API || 3331;
-
-  console.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
-  );
-  await app.listen(port);
+    const port = process.env.PORT_API || 3331;
+    console.log(
+      `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
+    );
+    await app.listen(port);
+  } catch (error) {
+    console.error('Error during application bootstrap:', error);
+  }
 }
 bootstrap();
+

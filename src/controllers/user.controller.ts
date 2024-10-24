@@ -1,9 +1,13 @@
 import { Controller, Get, Post, Body, Param, Request, ParseIntPipe, UseGuards  } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { CreateUserDto } from 'src/dtos/create-user.dto';
+import { CreateUserDto, createUserValidation } from 'src/dtos/create-user.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { Public } from 'src/decorators/public.decorator';
 import { AuthGuard } from 'src/guards/jwt-auth.guard';
+import { PermissionEnum } from 'src/common/00.enum/permission.enum';
+import { Permission } from '../decorators/permission.decorator'
+import { JoiValidationPipe } from 'src/pipe/joi.validation';
+import { CBadRequestException } from 'src/exception/badrequest.exception';
 
 @Controller('users')
 export class UserController {
@@ -23,9 +27,20 @@ export class UserController {
       return {aaa:"22222222"};
   }
 
-  
+  //@Permission(PermissionEnum.ManageUser) // Chỉ cho phép người dùng có permission ManageUser truy cập
+  @Post('/createUser')
+  @UseGuards(AuthGuard)
+  async createUser(@Body(new JoiValidationPipe(createUserValidation)) item: CreateUserDto) {
+      try {
+        const newUser = await this.userService.addNewUser(item);
+        return newUser;
+      } catch (error) {
+        throw new CBadRequestException('Lỗi hệ thống');
+      }
+     
+      
+  }
 
-  // Các API khác
 
 }
 

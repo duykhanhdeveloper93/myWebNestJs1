@@ -1,27 +1,27 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { RoleService } from 'src/services/role.service';
+import { PermissionEnum } from 'src/common/00.enum/permission.enum';
 
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(private reflector: Reflector, private roleService: RoleService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+  canActivate(context: ExecutionContext): boolean {
+    const requiredPermissions = this.reflector.get<PermissionEnum[]>('permissions', context.getHandler());
     if (!requiredPermissions) {
-      return true;
+        return true; // Không cần kiểm tra permission
     }
-    const { user } = context.switchToHttp().getRequest();
-    const roles = await this.roleService.findRolesByUser(user.id);
-    return roles.some(role =>
-      requiredPermissions.every(permission =>
-        role.permissions.map(p => p.name).includes(permission)
-      )
-    );
-  }
+
+    const request = context.switchToHttp().getRequest();
+    const user = request.user; // Giả sử bạn đã đính kèm thông tin người dùng vào request
+
+    const hasPermission = () => requiredPermissions.some((permission) => user.permissions.includes(permission));
+    if (!hasPermission()) {
+        throw new ForbiddenException('Bạn không có quyền truy cập vào tài nguyên này.');
+    }
+    return true;
+}
 }

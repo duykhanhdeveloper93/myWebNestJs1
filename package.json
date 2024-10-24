@@ -29,7 +29,6 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
-    "@types/cache-manager": "4.0.2",
     "@types/cache-manager-redis-store": "^2.0.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
@@ -39,13 +38,16 @@
     "connect-typeorm": "^2.0.0",
     "env-cmd": "^10.1.0",
     "express-session": "^1.18.0",
+    "joi": "^17.13.3",
     "mysql2": "^3.2.3",
+    "nj-request-scope": "^1.0.8",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "express-http-context": "^1.2.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

@@ -30,8 +30,6 @@ const routes: Routes = [
 ];
 
 
-
-
 const modules = [CoreModule] as any[];
 
 const entities = [...myWebApiEntities];

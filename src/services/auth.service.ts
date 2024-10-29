@@ -39,7 +39,6 @@ export class AuthService {
     options: { request: CRequest },
   ): Promise<any> {
     const isLoggedIn = await this.tokenService.loggedIn(options.request);
-    console.log("isLoggedIn: " + isLoggedIn)
     if (isLoggedIn) {
       return {
         message: 'Đang trong phiên đăng nhập',
@@ -55,12 +54,10 @@ export class AuthService {
       },
       take: 1,
     });
-    console.log("isPasswordMatching" + 1)
     if (!user) {
       throw new BadRequestException(ResponseCodeEnum.NOT_EXIST_USER);
     }
     const isPasswordMatching = await bcrypt.compare(pass, user.password);
-    console.log("isPasswordMatching" + 1)
     // const passHash = await this.userService.hashPassword(pass);
     if (!isPasswordMatching) {
       return {
@@ -68,7 +65,7 @@ export class AuthService {
       };
     } else {
       try {
-        console.log("vào đây: " + 1)
+
         // Xóa session hiện có của user tương ứng.
         await this.cacheManager.deleteKeys(
           `${redisConsts.prefixRefreshToken}:${user.id}*`,

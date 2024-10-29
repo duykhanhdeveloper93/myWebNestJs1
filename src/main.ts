@@ -6,6 +6,7 @@ import { UserService } from './services/user.service';
 import { userAdmin } from './common/00.enum';
 import { environment } from './common/02.environment';
 import { uniq } from 'lodash';
+import { StartUpService } from './services/startup.service';
 
 function getCORSUrl() {
   const urls = [
@@ -23,8 +24,8 @@ async function bootstrap() {
     const permissionService = app.get(PermissionService);
     await permissionService.seedPermissions(); // Khởi tạo dữ liệu permissions
 
-    const userService = app.get(UserService);
-    await userService.addNewUser(userAdmin); // Khởi tạo root user
+    const startUpService = await app.get(StartUpService);
+   await startUpService.createRootUser(userAdmin); // Khởi tạo root user
 
     const globalPrefix = 'api/v1';
     app.setGlobalPrefix(globalPrefix);

@@ -14,5 +14,6 @@ export * from './permission.repository';
 export const myWebApiRepositories = [
    RoleRepository,
    UserRepository,
-   PermissionRepository
+   PermissionRepository,
+   BaseRepository
 ];

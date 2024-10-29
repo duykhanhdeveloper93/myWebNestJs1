@@ -11,8 +11,15 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: LoginDto, @Req() req: CRequest) {
-    return this.authService.signIn(signInDto.username, signInDto.password, { request: req});
+  async signIn(@Body() signInDto: LoginDto, @Req() req: CRequest) {
+    const { token, userId } = await this.authService.signIn(signInDto.username, signInDto.password, { request: req});
+    try {
+      console.log(userId)
+      return { statusCode: HttpStatus.OK, data: token };
+    } catch (error) {
+      return error;
+    }
+   
   }
 
   

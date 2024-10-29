@@ -9,4 +9,6 @@ export class UserRepository extends BaseRepository<UserEntity> {
     constructor(private readonly dataSource: DataSource) {
         super(UserEntity, dataSource.createEntityManager());
     }
+
+    
  }

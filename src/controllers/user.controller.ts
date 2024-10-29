@@ -28,8 +28,8 @@ export class UserController {
   }
 
   //@Permission(PermissionEnum.ManageUser) // Chỉ cho phép người dùng có permission ManageUser truy cập
+  @Public()
   @Post('/createUser')
-  @UseGuards(AuthGuard)
   async createUser(@Body(new JoiValidationPipe(createUserValidation)) item: CreateUserDto) {
       try {
         const newUser = await this.userService.addNewUser(item);

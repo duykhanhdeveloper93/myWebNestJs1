@@ -112,11 +112,14 @@ export class TokenService {
     // }
 
     async loggedIn(request: Request) {
-        const headers = request.headers as CIncomingHttpHeaders;
+        const headers = request.headers as CIncomingHttpHeaders;//
         const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
         const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
         const accessToken = headers[HeadersKeyEnum.AS];
-
+        for (const [key, value] of Object.entries(headers)) {
+            console.log(`${key}: ${value}`);
+        }
+  
         if (!accessToken || !refreshToken) return false;
 
         try {

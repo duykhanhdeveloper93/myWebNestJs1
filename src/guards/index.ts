@@ -5,7 +5,7 @@ import { AuthGuard } from "./jwt-auth.guard";
 
 
 export const myWebGuard = [
-   AuthGuard,
+   
    LocalAuthGuard,
    PermissionsGuard
 ];

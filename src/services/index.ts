@@ -1,13 +1,17 @@
 import { RCacheManager } from './CacheManager';
 import { AuthService } from './auth.service';
+
 import { PermissionService } from './permission.service';
 import { RoleService } from './role.service';
 import { TokenService } from './token.service';
 import { UserService } from './user.service';
+import { StartUpService } from './startup.service';
 
 
 export * from './role.service';
+export * from './base.service';
 export * from './user.service';
+export * from './startup.service';
 export * from './permission.service';
 export * from './auth.service';
 export * from './CacheManager';
@@ -19,5 +23,6 @@ export const coreServices = [
     PermissionService,
     AuthService,
     TokenService,
-    RCacheManager
+    RCacheManager,
+    StartUpService
 ];

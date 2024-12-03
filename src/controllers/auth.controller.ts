@@ -3,6 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { AuthGuard } from 'src/guards/jwt-auth.guard';
 import { LoginDto } from 'src/dtos/auth.dto';
 import { CRequest } from 'src/services/base.service.type';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,7 @@ export class AuthController {
   async signIn(@Body() signInDto: LoginDto, @Req() req: CRequest) {
     const { token, userId } = await this.authService.signIn(signInDto.username, signInDto.password, { request: req});
     try {
-      console.log(userId)
+      
       return { statusCode: HttpStatus.OK, data: token };
     } catch (error) {
       return error;
@@ -27,6 +28,19 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/sign-out')
+  @ApiOperation({ summary: 'Sign out and remove session of current user' })
+  async signOut(@User() currentUser: UserEntity) {
+      const userId = currentUser.id;
+      await this.authService.signOut(userId, {
+          changeBy: 'user',
+      });
+      return {
+          message: 'logged-out',
+      };
   }
 
 }

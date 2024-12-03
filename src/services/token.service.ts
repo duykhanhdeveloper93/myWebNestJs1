@@ -111,14 +111,43 @@ export class TokenService {
     //     return result;
     // }
 
-    async loggedIn(request: Request) {
-        const headers = request.headers as CIncomingHttpHeaders;//
-        const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
-        const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
-        const accessToken = headers[HeadersKeyEnum.AS];
-        for (const [key, value] of Object.entries(headers)) {
-            console.log(`${key}: ${value}`);
+    getCookieValue(cookie: string | undefined, key: string): string | undefined {
+        if (!cookie) return undefined;
+    
+        // Tách cookie thành các cặp key=value
+        const cookies = cookie.split(';').map((c) => c.trim());
+        
+        // Tìm cookie có key phù hợp
+        const match = cookies.find((c) => c.startsWith(`${key}=`));
+        if (match) {
+            // Trả về giá trị sau dấu =
+            return match.split('=')[1];
         }
+        return undefined;
+    }
+
+    async loggedIn(request: Request) {
+       
+
+        
+        const headers = request.headers as CIncomingHttpHeaders;//
+
+        const cookieHeader = headers['cookie'];
+
+        // Lấy giá trị từ cookie
+        const clientId = this.getCookieValue(cookieHeader, 'client-id');
+        const accessToken = this.getCookieValue(cookieHeader, 'u-s');
+        const prefixCode = `${redisConsts.prefixRefreshToken}:${clientId}`;
+        const decodedPrefixCode = decodeURIComponent(prefixCode);
+        const refreshToken = (await this.cacheManager.get(decodedPrefixCode)) as string;
+        // const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
+        //const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
+        //const accessToken = headers[HeadersKeyEnum.AS];
+        console.log('clientId:', clientId);
+        console.log('accessToken:', accessToken);
+        console.log('prefixCode:', prefixCode);
+        console.log('refreshToken:', refreshToken);
+
   
         if (!accessToken || !refreshToken) return false;
 

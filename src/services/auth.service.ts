@@ -19,6 +19,9 @@ import { RCacheManager } from './CacheManager';
 
 @Injectable()
 export class AuthService {
+  signOut(userId: any, arg1: { changeBy: string; }) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
@@ -39,7 +42,9 @@ export class AuthService {
     options: { request: CRequest },
   ): Promise<any> {
     const isLoggedIn = await this.tokenService.loggedIn(options.request);
+    console.log("trong phiên chưa nhỉ")
     if (isLoggedIn) {
+      console.log("trong phiên")
       return {
         message: 'Đang trong phiên đăng nhập',
       };

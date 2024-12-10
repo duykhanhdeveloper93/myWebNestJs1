@@ -143,10 +143,7 @@ export class TokenService {
         // const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
         //const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
         //const accessToken = headers[HeadersKeyEnum.AS];
-        console.log('clientId:', clientId);
-        console.log('accessToken:', accessToken);
-        console.log('prefixCode:', prefixCode);
-        console.log('refreshToken:', refreshToken);
+        
 
   
         if (!accessToken || !refreshToken) return false;

@@ -21,13 +21,7 @@ export class RoleService {
     return this.roleRepository.save(role);
   }
 
-  async findRolesByUser(userId: number) {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['roles', 'roles.permissions']
-    });
-    return user.roles;
-  }
+
 
   // Thêm các method khác nếu cần
 }

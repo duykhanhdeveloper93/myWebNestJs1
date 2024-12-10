@@ -11,15 +11,48 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 import { UserEntity } from '../entities/user.entity';
 
 import { Request, Response } from 'express';
+import { UserIdentity } from './identity.service';
 
 export type XPlatform = 'web' | 'mobile';
 
 export type XCId = string;
 
 export interface CRequest extends Request {
-    user: UserEntity ;
-    platform: XPlatform;
-    captchaId?: XCId;
+    id: number;
+    firstName: string;
+    lastName: string;
+    workEmail: string;
+    fullNameVn: string;
+    isWebNoticed: boolean;
+    isMailNoticed: boolean;
+    status: boolean;
+    keepLoginSession: boolean;
+    phoneNumber: string;
+    address: string;
+    avatar: string;
+    loginName: string;
+    isOnlineChat: boolean;
+    activeType: number;
+    isGuest: boolean;
+   
+    voiceUserId: number;
+    site: {
+        id: number;
+        alias: string;
+    };
+    notificationConfig: {
+        id: number;
+        popupNewEmail: boolean;
+        popupNewTicketReceive: boolean;
+        popupNewTicketMonitor: boolean;
+        popupNewChat: boolean;
+        popupNewReplyTicket: boolean;
+    };
+    isSys: boolean;
+    isAdmin: boolean;
+    isAdminDepartment: boolean;
+    isAdminSite: boolean;
+    cId?: number;
 }
 
 export type CResponse = Response;

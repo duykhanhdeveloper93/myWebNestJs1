@@ -58,7 +58,7 @@ if (environment.enableRedis) {
       username: dbUser,
       password: dbPw,
       database: dbName,
-      synchronize: dbSynchronize,
+      synchronize: true,
       entities,
       
       timezone: 'local',

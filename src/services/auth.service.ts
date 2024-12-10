@@ -19,14 +19,11 @@ import { RCacheManager } from './CacheManager';
 
 @Injectable()
 export class AuthService {
-  signOut(userId: any, arg1: { changeBy: string; }) {
-    throw new Error('Method not implemented.');
-  }
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly tokenService: TokenService,
-    private cacheManager: RCacheManager,
+    private cacheManager: RCacheManager
   ) {}
 
   async login(user: any) {
@@ -42,7 +39,7 @@ export class AuthService {
     options: { request: CRequest },
   ): Promise<any> {
     const isLoggedIn = await this.tokenService.loggedIn(options.request);
-    console.log("trong phiên chưa nhỉ")
+    
     if (isLoggedIn) {
       console.log("trong phiên")
       return {
@@ -93,4 +90,20 @@ export class AuthService {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
+
+  async signOut(userId: number, options: { extension?: string; changeBy: 'user' | 'system' }) {
+    await this.clearSessionOfUser(`${userId}`);
+    return true;
+  }
+
+      // Only logout now
+  async clearSessionOfUser(user_id: string) {
+    //#region xóa session hiện có của user tương ứng.
+    await this.cacheManager.deleteKeys(`${redisConsts.prefixRefreshToken}:${user_id}:*`);
+    //#endregion
+    //#region invalid cache
+    await this.cacheManager.deleteKeys(`${redisConsts.prefixUserIdentity}:${user_id}`);
+    //#endregion
+  }
+
 }

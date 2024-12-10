@@ -1,22 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { PermissionEntity } from './permission.entity';
 import { CBaseEntity } from './base.entity';
+import { UserRoleEntity } from './user_role.entity';
+import { RolePermissionEntity } from './role-permission.entity';
 
-@Entity()
+@Entity('role')
 export class RoleEntity extends CBaseEntity{
 
-  @Column()
-  name: string;
+  @Column({ nullable: false, length: 255, type: 'varchar' , comment: 'Tên của vai trò' })
+  name: string
 
-  @ManyToMany(() => UserEntity, user => user.roles)
-  users: UserEntity[];
+  @Column({ nullable: true, length: 255, type: 'varchar' , comment: 'Mô tả của vai trò' })
+  desc: string
 
-  @ManyToMany(() => PermissionEntity, permission => permission.roles)
-  @JoinTable({
-    name: 'role_permissions',
-    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' }
+  @Column({ nullable: true, type: 'boolean' })
+  default: boolean
+
+  @OneToMany(() => RolePermissionEntity, (role) => role.role, {
+      createForeignKeyConstraints: false,
   })
-  permissions: PermissionEntity[];
+  public rolePermissions!: RolePermissionEntity[]
+
+  @OneToMany(() => UserRoleEntity, (role) => role.role, {
+      createForeignKeyConstraints: false,
+  })
+  public userRoles!: UserRoleEntity[];
 }
+

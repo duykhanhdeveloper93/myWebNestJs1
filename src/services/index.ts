@@ -6,6 +6,7 @@ import { RoleService } from './role.service';
 import { TokenService } from './token.service';
 import { UserService } from './user.service';
 import { StartUpService } from './startup.service';
+import { IdentityService } from './identity.service';
 
 
 export * from './role.service';
@@ -24,5 +25,6 @@ export const coreServices = [
     AuthService,
     TokenService,
     RCacheManager,
-    StartUpService
+    StartUpService,
+    IdentityService
 ];

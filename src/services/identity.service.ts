@@ -42,7 +42,10 @@ export class IdentityService {
                     id: true,
                     firstName: true,
                     lastName: true
-                }
+                },
+                where: {
+                    id: userId,
+                },
             }),
             this.userRoleRepository.find({
                 where: {
@@ -86,7 +89,6 @@ export class IdentityService {
                 ttl: redisTtl.userIdentity,
             });
         });
-
         return currentUser;
     }
 }

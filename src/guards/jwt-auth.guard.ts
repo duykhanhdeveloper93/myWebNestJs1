@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
    
-    console.log(context.getHandler());
+
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -39,21 +39,19 @@ export class AuthGuard implements CanActivate {
     }
     
     const request = context.switchToHttp().getRequest();
-    console.log("2.2 request" + request);
+
     const token = this.extractTokenFromHeader(request);
     const usr = request.headers['u-s-r'];
     const clientId = request.headers['client-id'];
-    console.log("2.2 token" + token);
-    console.log("2.2 usr" + usr);
-    console.log("2.2 clientId" + clientId);
+
    
     if (!token || !usr || !clientId) {
-      console.log("2.2");
+
       throw new UnauthorizedException('Missing authentication headers');
       
     }
     try {
-      console.log("2.3");
+
       const payload = await this.jwtService.verifyAsync(token, {
         secret: environment.jwtSecretATKey || jwtConstants.secret,
       });
@@ -72,8 +70,7 @@ export class AuthGuard implements CanActivate {
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    console.log("request.headers" + request.headers);
-    console.log("request.headers.authorization" + request.headers.authorization);
+
     return type === 'Bearer' ? token : undefined;
   }
 
@@ -84,7 +81,6 @@ export class AuthGuard implements CanActivate {
    * @returns
    */
   async canActiveWithInternal(request: CRequest) {
-    console.log("Lấy current User mà bỏ vào request")
     const accessToken = this.extractToken(request);
     
     try {
@@ -100,13 +96,12 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: environment.jwtSecretATKey,
       });
-      console.log("Lấy current User mà bỏ vào request")
+      console.log("Lấy current User mà bỏ vào request:" + payload.id )
       const currentUser = await this.identityService.aggreate(payload.id);
       if (!currentUser) {
         throw new UnauthorizedException(ResponseCodeEnum.REQUIRE_SIGN_IN);
       }
       request.user = currentUser;
-      console.log('currentUser như nào hả');
       // this.logger.logAuthor(currentUser.id);
       return true;
     } catch (error) {

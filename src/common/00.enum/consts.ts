@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 export const jwtConstants = {
-    secret: 'secret',
+    secret:  'Thitga123_@',
     refresh_secret: 'refresh_secret',
 };
 export const IS_PUBLIC_KEY = 'IS_PUBLIC_KEY';

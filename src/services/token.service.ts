@@ -126,26 +126,48 @@ export class TokenService {
         return undefined;
     }
 
-    async loggedIn(request: Request) {
+    // async loggedIn(request: Request) {
        
+    //     const headers = request.headers as CIncomingHttpHeaders;//
 
-        
-        const headers = request.headers as CIncomingHttpHeaders;//
+    //     const cookieHeader = headers['cookie'];
 
-        const cookieHeader = headers['cookie'];
-
-        // Lấy giá trị từ cookie
-        const clientId = this.getCookieValue(cookieHeader, 'client-id');
-        const accessToken = this.getCookieValue(cookieHeader, 'u-s');
-        const prefixCode = `${redisConsts.prefixRefreshToken}:${clientId}`;
-        const decodedPrefixCode = decodeURIComponent(prefixCode);
-        const refreshToken = (await this.cacheManager.get(decodedPrefixCode)) as string;
-        // const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
-        //const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
-        //const accessToken = headers[HeadersKeyEnum.AS];
+    //     // Lấy giá trị từ cookie
+    //     const clientId = this.getCookieValue(cookieHeader, 'client-id');
+    //     const accessToken = this.getCookieValue(cookieHeader, 'u-s');
+    //     const prefixCode = `${redisConsts.prefixRefreshToken}:${clientId}`;
+    //     const decodedPrefixCode = decodeURIComponent(prefixCode);
+    //     const refreshToken = (await this.cacheManager.get(decodedPrefixCode)) as string;
+    //     // const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
+    //     //const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
+    //     //const accessToken = headers[HeadersKeyEnum.AS];
         
 
   
+    //     if (!accessToken || !refreshToken) return false;
+
+    //     try {
+    //         await Promise.all([
+    //             this.jwtService.verifyAsync<ICurrentUser>(refreshToken, {
+    //                 secret: environment.jwtSecretRTKey,
+    //             }),
+    //             this.jwtService.verifyAsync<ICurrentUser>(accessToken, {
+    //                 secret: environment.jwtSecretATKey,
+    //             }),
+    //         ]);
+
+    //         return true;
+    //     } catch {
+    //         return false;
+    //     }
+    // }
+
+    async loggedIn(request: Request) {
+        const headers = request.headers as CIncomingHttpHeaders;
+        const prefixCode = `${redisConsts.prefixRefreshToken}:${headers[HeadersKeyEnum.ClientId]}`;
+        const refreshToken = (await this.cacheManager.get(prefixCode)) as string;
+        const accessToken = headers[HeadersKeyEnum.AS];
+
         if (!accessToken || !refreshToken) return false;
 
         try {

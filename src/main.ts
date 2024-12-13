@@ -33,8 +33,7 @@ async function bootstrap() {
     //#region enable cors
     app.enableCors({
       origin: getCORSUrl(),
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-      allowedHeaders: 'Content-Type, Accept, Authorization',
+  
       credentials: true,
     });
     //#endregion

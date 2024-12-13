@@ -40,7 +40,6 @@ export class AuthController {
   @Post('/sign-out')
   @ApiOperation({ summary: 'Sign out and remove session of current user' })
   async signOut(@User() currentUser: UserEntity) {
-      console.log(currentUser)
       const userId = currentUser.id;
       await this.authService.signOut(userId, {
           changeBy: 'user',

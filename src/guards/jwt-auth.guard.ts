@@ -55,7 +55,7 @@ export class AuthGuard implements CanActivate {
     try {
       console.log("2.3");
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
+        secret: environment.jwtSecretATKey || jwtConstants.secret,
       });
       console.log("3");
       request['user'] = payload;
@@ -63,8 +63,9 @@ export class AuthGuard implements CanActivate {
       request['clientId'] = clientId;
       const isValid = await this.canActiveWithInternal(request);
       return isValid;
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      return false;
     }
     return true;
   }

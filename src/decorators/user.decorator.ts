@@ -8,14 +8,10 @@ import { inspect } from 'util';
  */
 export const User = createParamDecorator((data: string, ctx: ExecutionContext) => {
     try {
-       
         const request = ctx.switchToHttp().getRequest<CRequest>();
-        console.log("request" + request)
-        console.log("Request details:", inspect(request, { depth: null, colors: true }));
         const user = request.user;
-        console.log("user" + user)
         return data ? user?.[data] : user;
     } catch (error) {
-        console.log('[CurrentUserError]', error);
+        
     }
 });

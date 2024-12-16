@@ -66,12 +66,15 @@ export class TokenService {
         await this.cacheManager.set(`${redisConsts.prefixRefreshToken}:${user.id}:${clientId}`, refresh_token, {
             ttl: refreshTokenExpiresIn,
         });
-        return {
+        const dataReturn = {
             logged_in: true,
             access_token,
             refresh_token,
             client_Id: `${user.id}:${clientId}`,
-        };
+        }
+        console.log("refresh_token" + refresh_token)
+        console.log("dataReturn" + dataReturn)
+        return dataReturn;
     }
 
     // async sign(payload: any, options?: JwtSignOptions) {
@@ -184,5 +187,6 @@ export class TokenService {
         } catch {
             return false;
         }
+
     }
 }

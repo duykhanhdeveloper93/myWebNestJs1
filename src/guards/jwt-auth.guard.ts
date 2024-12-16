@@ -91,21 +91,22 @@ export class AuthGuard implements CanActivate {
         `${redisConsts.prefixRefreshToken}:${request.headers[HeadersKeyEnum.ClientId]}`,
       )) as string;
       if (accessToken && !refreshToken) {
+        console.log("accessToken"+ accessToken)
+        console.log("refreshToken"+ refreshToken)
         throw new UnauthorizedException(ResponseCodeEnum.REQUIRE_SIGN_IN);
       }
       const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: environment.jwtSecretATKey,
       });
-      console.log("Lấy current User mà bỏ vào request:" + payload.id )
       const currentUser = await this.identityService.aggreate(payload.id);
       if (!currentUser) {
         throw new UnauthorizedException(ResponseCodeEnum.REQUIRE_SIGN_IN);
       }
       request.user = currentUser;
-      // this.logger.logAuthor(currentUser.id);
+     
       return true;
     } catch (error) {
-      // this.logger.error('[AuthInternalError]', error);
+     
       this.catchError(error);
     }
   }

@@ -4,7 +4,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { DataSource, FindManyOptions } from 'typeorm';
+import { DataSource, FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { first } from 'lodash';
 import { BaseService } from './base.service';
 import { CRequest } from './base.service.type';
@@ -43,9 +43,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     if (!exists) {
       const saltRounds = 10; // Độ phức tạp của mã hóa
       const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
-      console.log("hashedPassword" + hashedPassword)
       const currentUser = this.getCurrentUser();
-      console.log("currentUser" + currentUser)
       createUserDto.createdAt = new Date();
       createUserDto.createdBy = currentUser;
       
@@ -59,13 +57,10 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
   async addNewUser(createUserDto: CreateUserDto) {
     const saltRounds = 10; // Độ phức tạp của mã hóa
     const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
-    console.log("hashedPassword" + hashedPassword)
     
     const currentUser = this.getCurrentUser();
-    console.log("currentUser" + currentUser)
     createUserDto.createdAt = new Date();
     createUserDto.createdBy = currentUser;
-    console.log(this.userRepository)
     const user = this.userRepository.create(createUserDto);
     return this.userRepository.save(user);
      
@@ -113,6 +108,27 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     const saltRounds = 10; // You can adjust this value based on your security needs
     return await bcrypt.hash(password, saltRounds);
   }
+
+
+  async getByUserNameMinify(userName: string, where?: FindOptionsWhere<UserEntity>) {
+    const users = await this.repository.find({
+        select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+            password: true,
+        },
+        where: {
+            ...where,
+            username: userName,
+           
+        }
+       
+    });
+    const user = first(users);
+    return user;
+}
 
   // Thêm các method khác nếu cần
 }

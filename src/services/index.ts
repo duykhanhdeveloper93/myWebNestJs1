@@ -7,6 +7,7 @@ import { TokenService } from './token.service';
 import { UserService } from './user.service';
 import { StartUpService } from './startup.service';
 import { IdentityService } from './identity.service';
+import { CrytoService } from './cryto.service';
 
 
 export * from './role.service';
@@ -16,7 +17,7 @@ export * from './startup.service';
 export * from './permission.service';
 export * from './auth.service';
 export * from './CacheManager';
-
+export * from './cryto.service';
 
 export const coreServices = [
     UserService,
@@ -26,5 +27,7 @@ export const coreServices = [
     TokenService,
     RCacheManager,
     StartUpService,
-    IdentityService
+    IdentityService,
+    CrytoService,
+
 ];

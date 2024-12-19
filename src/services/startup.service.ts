@@ -31,7 +31,11 @@ export class StartUpService  {
       
     });
     if (!exists) {
-      createUserDto.password = await this.hashPassword(createUserDto.password);
+      createUserDto.passwordHash = await this.hashPassword(createUserDto.password);
+      createUserDto.passwordHashTemp = await this.hashPassword(createUserDto.password);
+      createUserDto.password = null;
+      createUserDto.isSys = true;
+      createUserDto.status = true;
       const user = this.userRepository.create(createUserDto);
       this.userRepository.save(user);
     }

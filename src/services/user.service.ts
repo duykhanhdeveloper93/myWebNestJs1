@@ -117,7 +117,9 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
             firstName: true,
             lastName: true,
             username: true,
-            password: true,
+            passwordHash:true,
+            passwordHashTemp: true,
+            status:true
         },
         where: {
             ...where,

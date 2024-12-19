@@ -36,6 +36,45 @@ export class AuthService {
     };
   }
 
+  async signInNoCaptcha(
+    singInRequest: { userName: string; password: string },
+    options: { request: CRequest },
+) {
+    const {  password, userName } = singInRequest;
+
+    const isLoggedIn = await this.tokenService.loggedIn(options.request);
+    if (isLoggedIn) {
+        throw new BadRequestException(ResponseCodeEnum.LOGGED_IN);
+    }
+
+    const user = await this.userService.getByUserNameMinify(userName);
+   
+    if (!user || user?.isExternalUser) {
+        throw new BadRequestException(ResponseCodeEnum.NOT_EXIST_USER);
+    }
+    if (user && user?.id && user?.status === false) {
+        throw new BadRequestException(ResponseCodeEnum.USER_DEACTIVE);
+    }
+    if (!user.status) throw new BadRequestException(ResponseCodeEnum.NOT_PERMISION_LOGIN);
+
+  
+    if (!isNull(user.passwordHashTemp) && (await this.crytoService.compare(password, user.passwordHashTemp))) {
+        // Nếu password nhập vào bằng passwordHashTemp thì tức là lần đăng nhập đầu tiên sau khi đổi mật khẩu.
+        // Tiến hành update lại mật khẩu mới bằng mật khẩu temp và reset trường mật khẩu temp
+        
+    } else if (!(await this.crytoService.compare(password, user.passwordHash))) {
+        throw new BadRequestException(ResponseCodeEnum.U_PW_NOT_CORRECT);
+    }
+   
+    const payload = {
+        id: user.id,
+        name: user.name,
+        loginName: user.loginName,
+    };
+    const token = await this.tokenService.generateKey(payload);
+    console.log("user" + user.id)
+    return { token, userId: user.id };
+  }
 
   async signIn(
     singInRequest: { userName: string; password: string; captcha: string },
@@ -51,6 +90,7 @@ export class AuthService {
 
     //#region check username, status.
     const user = await this.userService.getByUserNameMinify(userName);
+    console.log("xxxx" + user.status)
     if (!user || user?.isExternalUser) {
         throw new BadRequestException(ResponseCodeEnum.NOT_EXIST_USER);
     }

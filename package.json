@@ -36,6 +36,7 @@
     "cache-manager": "^5.7.5",
     "cache-manager-redis": "^0.6.0",
     "cache-manager-redis-store": "2.0.0",
+    "class-transformer": "^0.5.1",
     "connect-typeorm": "^2.0.0",
     "env-cmd": "^10.1.0",
     "express-http-context": "^1.2.4",

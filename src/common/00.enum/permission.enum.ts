@@ -1,12 +1,12 @@
 import { CreateUserDto } from "../../dtos/create-user.dto";
 
 
-export enum PermissionEnum {
+export enum Permission {
     ManageUser = 'manage_user',
     UpdateUser = 'update_user',
     RemoveUser = 'remove_user',
     UploadUser = 'upload_user',
-    CreateUser = 'create_user',
+    CreateUser = 'create_user'
 }
 
 

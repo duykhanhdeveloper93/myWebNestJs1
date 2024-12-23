@@ -7,7 +7,6 @@ import { myWebApiControllers } from './controllers';
 import { coreServices } from './services';
 import { myWebApiRepositories } from './repositories';
 import { myWebApiEntities } from './entities';
-import { myWebGuard } from './guards';
 import { coreStrategy } from './strategies/index';
 
 /**
@@ -24,7 +23,7 @@ const modules = [TypeOrmModule.forFeature([...myWebApiEntities])];
         ...modules
     ],
     controllers: [...myWebApiControllers],
-    providers: [...myWebApiRepositories, ...coreServices,...myWebGuard , ...coreStrategy],
+    providers: [...myWebApiRepositories, ...coreServices , ...coreStrategy],
     exports: [...coreServices,...myWebApiRepositories],
 })
 export class CoreModule {}

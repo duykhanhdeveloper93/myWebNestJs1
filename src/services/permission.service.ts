@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { PermissionEnum } from "src/common/00.enum/permission.enum";
+import { Permission } from "src/common/00.enum/permission.enum";
 import { PermissionEntity } from "src/entities";
 import { PermissionRepository } from "src/repositories/permission.repository";
 
@@ -12,7 +12,7 @@ export class PermissionService {
   ) {}
 
   async seedPermissions() {
-    const permissions = Object.values(PermissionEnum);
+    const permissions = Object.values(Permission);
     for (const permission of permissions) {
         const exists = await this.permissionRepository.findOne({
             where: { name: permission }

@@ -1,11 +1,21 @@
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth.guard';
+import { PermissionGuard } from './permission.guard';
 
-import { LocalAuthGuard } from "./local-auth.guard";
-import { PermissionsGuard } from ".//permission.guard";
-import { AuthGuard } from "./jwt-auth.guard";
+export * from './auth.guard';
+export * from './permission.guard';
 
-
-export const myWebGuard = [
+export const coreGuards = [
+   {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+  },
+  {
+      provide: APP_GUARD,
+      /**
+       * @see https://docs.nestjs.com/security/authorization
+       */
+      useClass: PermissionGuard,
+  },
    
-   LocalAuthGuard,
-   PermissionsGuard
 ];

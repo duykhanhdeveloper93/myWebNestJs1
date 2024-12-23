@@ -100,8 +100,7 @@ export class AuthGuard implements CanActivate {
       });
       const currentUser = await this.identityService.aggreate(payload.id);
       if (!currentUser) {
-        throw new UnauthorizedException(ResponseCodeEnum.REQUIRE_SIGN_IN);
-      }
+        throw new UnauthorizedException(ResponseCodeEnum.REQUIRE_SIGN_IN);      }
       request.user = currentUser;
      
       return true;

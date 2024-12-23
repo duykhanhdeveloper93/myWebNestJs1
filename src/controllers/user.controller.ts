@@ -3,11 +3,13 @@ import { UserService } from '../services/user.service';
 import { CreateUserDto, createUserValidation } from 'src/dtos/create-user.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { Public } from 'src/decorators/public.decorator';
-import { AuthGuard } from 'src/guards/jwt-auth.guard';
-import { PermissionEnum } from 'src/common/00.enum/permission.enum';
-import { Permission } from '../decorators/permission.decorator'
+import { AuthGuard } from 'src/guards/auth.guard';
+
 import { JoiValidationPipe } from 'src/pipe/joi.validation';
 import { CBadRequestException } from 'src/exception/badrequest.exception';
+import { Permission } from 'src/common/00.enum/permission.enum';
+import { PermissionDecorators } from 'src/decorators';
+
 
 @Controller('users')
 export class UserController {
@@ -27,7 +29,7 @@ export class UserController {
       return {aaa:"22222222"};
   }
 
-  //@Permission(PermissionEnum.ManageUser) // Chỉ cho phép người dùng có permission ManageUser truy cập
+  @PermissionDecorators(Permission.CreateUser)
   @Public()
   @Post('/createUser')
   async createUser(@Body(new JoiValidationPipe(createUserValidation)) item: CreateUserDto) {

@@ -2,8 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { In } from 'typeorm';
 import { filter, isNil, map, omitBy } from 'lodash';
-import { redisConsts, redisTtl } from '../common';
-import { Permission } from '../decorators/permission.decorator';
+import { Permission, redisConsts, redisTtl } from '../common';
 import { UserEntity } from '../entities';
 import { UserRepository } from '../repositories';
 import { RCacheManager } from './CacheManager';
@@ -11,6 +10,7 @@ import { UserRoleEntity } from '../entities/user_role.entity';
 import { UserRoleRepository } from '../repositories/user-role.repository';
 import { RolePermissionEntity } from '../entities/role-permission.entity';
 import { RolePermissionRepository } from '../repositories/role-permission.repository';
+import { permissions } from 'src/common/03.seeding';
 
 
 export type UserIdentity = {
@@ -37,15 +37,18 @@ export class IdentityService {
 
     async aggreate(userId: number) {
         const [user, userRoles] = await Promise.all([
-            this.userRepository.findOne({
+            this.userRepository.findOneOrFail({
                 select: {
                     id: true,
                     firstName: true,
-                    lastName: true
+                    lastName: true,
+
+                    isSys: true,
                 },
                 where: {
                     id: userId,
                 },
+                
             }),
             this.userRoleRepository.find({
                 where: {
@@ -57,7 +60,6 @@ export class IdentityService {
                 },
             }),
         ]);
-        if (!user) return null;
 
         const roleIds = map(
             filter(userRoles, (ur) => {
@@ -65,7 +67,6 @@ export class IdentityService {
             }),
             'roleId',
         );
-
         const rolePermissions = await this.rolePermissionRepository.find({
             where: {
                 roleId: In(roleIds),
@@ -77,18 +78,17 @@ export class IdentityService {
 
         const rolePermissionIds: string[] = map(rolePermissions, 'permissionId') as unknown as string[];
 
-       
-
-       
-
-        const currentUser = omitBy({ ...user }, isNil) as unknown as UserIdentity;
-
-       
-        setImmediate(async () => {
-            await this.cacheService.getAndSet(`${redisConsts.prefixUserIdentity}:${userId}`, currentUser, {
-                ttl: redisTtl.userIdentity,
-            });
+        const pers = filter(permissions, (p) => {
+            return rolePermissionIds.includes(`${p.id}`);
         });
-        return currentUser;
+
+        const nameOfPers = map(pers, 'name') as Permission[];
+
+        const userIdentity = omitBy({ ...user, pers: nameOfPers }, isNil) as unknown as UserEntity & {
+            pers;
+            cId?: number;
+        };
+
+        return userIdentity;
     }
 }

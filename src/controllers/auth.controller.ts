@@ -1,12 +1,14 @@
 import { Controller, Post, Body, Req, UseGuards, HttpCode, HttpStatus, Get, Request } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
-import { AuthGuard } from 'src/guards/jwt-auth.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { LoginDto } from 'src/dtos/auth.dto';
 import { CRequest } from 'src/services/base.service.type';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/decorators/user.decorator';
 import { UserEntity } from '../entities/user.entity';
 import { Public } from 'src/decorators/public.decorator';
+import { PermissionDecorators } from 'src/decorators';
+import { Permission } from 'src/common/00.enum/permission.enum';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -34,7 +36,6 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    @UseGuards(AuthGuard)
     @Public()
     async signIn(@Body() signInDto: { userName: string; password: string }, @Req() req: CRequest) {
         const { token, userId } = await this.authService.signInNoCaptcha(signInDto, {
@@ -49,7 +50,7 @@ export class AuthController {
     }
 
 
-    @UseGuards(AuthGuard)
+
     @Get('profile')
     getProfile(@Request() req) {
         return req.user;
@@ -57,6 +58,7 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard)
+    @PermissionDecorators(Permission.ManageUser) 
     @Post('/sign-out')
     @ApiOperation({ summary: 'Sign out and remove session of current user' })
     async signOut(@User() currentUser: UserEntity) {

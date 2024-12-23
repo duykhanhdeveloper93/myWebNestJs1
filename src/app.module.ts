@@ -13,6 +13,8 @@ import { expiresIn, jwtConstants } from './common/00.enum';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { myWebApiRepositories } from './repositories';
+
+import { coreGuards} from './guards';
 const {
   dbHost,
   dbName,
@@ -77,7 +79,8 @@ if (environment.enableRedis) {
   providers: [
     ...coreServices,
     ...coreStrategy,
-    ...myWebApiRepositories
+    ...myWebApiRepositories,
+    ...coreGuards
   ],
 })
 export class AppModule {}

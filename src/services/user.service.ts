@@ -10,6 +10,8 @@ import { BaseService } from './base.service';
 import { CRequest } from './base.service.type';
 import { NJRS_REQUEST } from 'nj-request-scope';
 import { REQUEST } from '@nestjs/core';
+import { PageSizeEnum } from 'src/common/00.enum/page-size.enum';
+import { CPaginateOptions, CPaginateResult } from './99.query-builder/query-builder.service';
 
 
 export interface ICurrentUser {
@@ -18,6 +20,17 @@ export interface ICurrentUser {
   isSys?: number;
   loginName: string;
   clientId?: string;
+}
+
+export interface UserFindOptions extends CPaginateOptions<UserEntity> {
+  keyword?: string;
+  status?: number;
+  department?: number[];
+  site?: number;
+  loginName?: string;
+  fullName?: string;
+  extension?: string;
+  isSuperAdmin?: boolean;
 }
 
 
@@ -109,6 +122,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     return await bcrypt.hash(password, saltRounds);
   }
 
+<<<<<<< HEAD
 
   async getByUserNameMinify(userName: string, where?: FindOptionsWhere<UserEntity>) {
     const users = await this.repository.find({
@@ -131,6 +145,86 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     const user = first(users);
     return user;
 }
+=======
+  async findAllPaginated(options: UserFindOptions): Promise<CPaginateResult<UserEntity>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+      
+      
+    console.log("aaaaaaaa")
+
+    // Apply filters
+    if (options.keyword) {
+      queryBuilder.where(
+        '(user.loginName LIKE :keyword OR user.fullName LIKE :keyword)',
+        { keyword: `%${options.keyword}%` }
+      );
+    }
+
+    if (options.status !== undefined) {
+      queryBuilder.andWhere('user.status = :status', { status: options.status });
+    }
+
+    if (options.department?.length) {
+      queryBuilder.andWhere('user.departmentId IN (:...departments)', { 
+        departments: options.department 
+      });
+    }
+
+    if (options.site !== undefined) {
+      queryBuilder.andWhere('user.siteId = :site', { site: options.site });
+    }
+
+    if (options.loginName) {
+      queryBuilder.andWhere('user.loginName LIKE :loginName', { 
+        loginName: `%${options.loginName}%` 
+      });
+    }
+
+    if (options.fullName) {
+      queryBuilder.andWhere('user.fullName LIKE :fullName', { 
+        fullName: `%${options.fullName}%` 
+      });
+    }
+
+    if (options.extension) {
+      queryBuilder.andWhere('user.extension LIKE :extension', { 
+        extension: `%${options.extension}%` 
+      });
+    }
+
+    if (options.isSuperAdmin !== undefined) {
+      queryBuilder.andWhere('user.isSuperAdmin = :isSuperAdmin', { 
+        isSuperAdmin: options.isSuperAdmin 
+      });
+    }
+
+    // Apply sorting
+    if (options.sortBy) {
+      queryBuilder.orderBy(`user.${options.sortBy}`, options.sortOrder || 'ASC');
+    }
+
+    // Apply pagination
+    const page = options.page || 1;
+    const limit = options.limit || PageSizeEnum.SMALL;
+    const skip = (page - 1) * limit;
+
+    queryBuilder.skip(skip).take(limit);
+
+    // Execute query
+    const [items, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      items,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        
+      }
+    };
+  }
+>>>>>>> 6c0956d (ok)
 
   // Thêm các method khác nếu cần
 }

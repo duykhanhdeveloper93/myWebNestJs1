@@ -1,12 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, BaseEntity } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { RoleEntity } from './role.entity';
 import { CBaseEntity } from './base.entity';
 import { UserRoleEntity } from './user_role.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity('user')
-export class UserEntity extends CBaseEntity{
-
+export class UserEntity extends CBaseEntity {
   @Column()
   username: string;
 
@@ -19,6 +18,7 @@ export class UserEntity extends CBaseEntity{
   @Column()
   address: string;
 
+<<<<<<< HEAD
   @Column()
   status: boolean;
 
@@ -34,5 +34,11 @@ export class UserEntity extends CBaseEntity{
   @Column({ nullable: true, select: false })
   passwordHashTemp?: string;
 
+=======
+  @OneToMany(() => UserRoleEntity, (role) => role.user, {
+    createForeignKeyConstraints: false,
+  })
+>>>>>>> 6c0956d (ok)
   public userRoles: UserRoleEntity[];
+
 }

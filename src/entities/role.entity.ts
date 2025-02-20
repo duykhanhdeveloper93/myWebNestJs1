@@ -25,6 +25,7 @@ export class RoleEntity extends CBaseEntity{
   @OneToMany(() => UserRoleEntity, (role) => role.role, {
       createForeignKeyConstraints: false,
   })
+  
   public userRoles!: UserRoleEntity[];
 }
 

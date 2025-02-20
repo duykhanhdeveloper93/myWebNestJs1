@@ -122,7 +122,6 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     return await bcrypt.hash(password, saltRounds);
   }
 
-<<<<<<< HEAD
 
   async getByUserNameMinify(userName: string, where?: FindOptionsWhere<UserEntity>) {
     const users = await this.repository.find({
@@ -145,7 +144,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     const user = first(users);
     return user;
 }
-=======
+
   async findAllPaginated(options: UserFindOptions): Promise<CPaginateResult<UserEntity>> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
       
@@ -224,7 +223,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
       }
     };
   }
->>>>>>> 6c0956d (ok)
+
 
   // Thêm các method khác nếu cần
 }

@@ -147,7 +147,9 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
 
   async findAllPaginated(options: UserFindOptions): Promise<CPaginateResult<UserEntity>> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
-      
+        // Kết hợp bảng userRole
+    queryBuilder.leftJoinAndSelect('user.userRoles', 'role');
+
       
     console.log("aaaaaaaa")
 
@@ -211,7 +213,8 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
 
     // Execute query
     const [items, total] = await queryBuilder.getManyAndCount();
-
+    console.log("item: " +items)
+    console.log("Items: ", JSON.stringify(items, null, 2));
     return {
       items,
       meta: {

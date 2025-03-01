@@ -8,12 +8,12 @@ import { Permission } from 'src/common/00.enum/permission.enum';
 export class PermissionGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
     canActivate(context: ExecutionContext): boolean {
-        console.log("aaaaaaaaaaaa")
+        console.log("check Permission Guard 1")
         const requiredPers = this.reflector.getAllAndOverride<Permission[]>(PER_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);
-        console.log("aaaaaaaaaaaa")
+        console.log("check Permission Guard 2")
         if (!requiredPers) {
             return true;
         }
@@ -25,8 +25,11 @@ export class PermissionGuard implements CanActivate {
         let canAccess = !!pers.find((per) => {
             return requiredPers.includes(per);
         });
-        console.log("aaaaaaaaaaaa")
-        if (isSys) canAccess = true;
+        
+        if (isSys) {
+            console.log("Tao là isAdmin")
+            canAccess = true;
+        }
 
         if (!canAccess) throw new ForbiddenException('Bạn không có quyền truy cập vào tài nguyên này!');
         return canAccess;

@@ -18,7 +18,6 @@ export class UserEntity extends CBaseEntity {
   @Column()
   address: string;
 
-<<<<<<< HEAD
   @Column()
   status: boolean;
 
@@ -34,11 +33,9 @@ export class UserEntity extends CBaseEntity {
   @Column({ nullable: true, select: false })
   passwordHashTemp?: string;
 
-=======
   @OneToMany(() => UserRoleEntity, (role) => role.user, {
     createForeignKeyConstraints: false,
   })
->>>>>>> 6c0956d (ok)
   public userRoles: UserRoleEntity[];
 
 }

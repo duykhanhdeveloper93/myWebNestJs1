@@ -70,11 +70,13 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
   async addNewUser(createUserDto: CreateUserDto) {
     const saltRounds = 10; // Độ phức tạp của mã hóa
     const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
-    
+    console.log("xxxxxxxxx1")
     const currentUser = this.getCurrentUser();
     createUserDto.createdAt = new Date();
     createUserDto.createdBy = currentUser;
-    const user = this.userRepository.create(createUserDto);
+    const user : UserEntity = this.userRepository.create(createUserDto);
+    console.log("xxxxxxxxx2" + user.username)
+    console.log("xxxxxxxxx2" + user.firstName)
     return this.userRepository.save(user);
      
   }
@@ -151,7 +153,6 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     queryBuilder.leftJoinAndSelect('user.userRoles', 'role');
 
       
-    console.log("aaaaaaaa")
 
     // Apply filters
     if (options.keyword) {

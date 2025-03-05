@@ -72,6 +72,10 @@ export class TokenService {
             refresh_token,
             client_Id: `${user.id}:${clientId}`,
         }
+        console.log("logged_in" + dataReturn.logged_in)
+        console.log("access_token" + dataReturn.access_token)
+        console.log("refresh_token" + dataReturn.refresh_token)
+        console.log("client_Id" + dataReturn.client_Id)
 
         return dataReturn;
     }

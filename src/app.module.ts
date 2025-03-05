@@ -68,7 +68,7 @@ if (environment.enableRedis) {
   }),
   JwtModule.register({
     global: true,
-    secret: jwtConstants.secret,
+    secret: environment.jwtSecretATKey || jwtConstants.secret,
     signOptions: { expiresIn: '3660s' },
   }),
   TypeOrmModule.forFeature(entities),

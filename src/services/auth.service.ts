@@ -72,7 +72,7 @@ export class AuthService {
         loginName: user.loginName,
     };
     const token = await this.tokenService.generateKey(payload);
-    console.log("user" + user.id)
+    console.log("qua login này" + user.id + "token này: " + token)
     return { token, userId: user.id };
   }
 

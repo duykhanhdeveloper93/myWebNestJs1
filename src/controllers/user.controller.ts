@@ -35,7 +35,6 @@ export class UserController {
   }
 
   @PermissionDecorators(Permission.CreateUser)
-  @Public()
   @Post('/createUser')
   async createUser(@Body(new JoiValidationPipe(createUserValidation)) item: CreateUserDto) {
       try {

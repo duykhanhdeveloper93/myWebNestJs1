@@ -22,7 +22,7 @@ export class UserEntity extends CBaseEntity {
   status: boolean;
 
   @Exclude({ toPlainOnly: true })
-  @Column({ nullable: false, select: false })
+  @Column({ nullable: true, select: false })
   passwordHash!: string;
 
   @Exclude({ toPlainOnly: true })

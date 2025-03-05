@@ -77,7 +77,11 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
     const user : UserEntity = this.userRepository.create(createUserDto);
     console.log("xxxxxxxxx2" + user.username)
     console.log("xxxxxxxxx2" + user.firstName)
-    return this.userRepository.save(user);
+    try {
+      this.userRepository.save(user);
+    } catch (error) {
+      console.log(error)
+    }
      
   }
 

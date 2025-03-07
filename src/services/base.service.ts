@@ -19,9 +19,9 @@ import { CBaseEntity } from 'src/entities/base.entity';
 import { BaseRepository } from 'src/repositories/base.repository';
 import { PAGE_SIZE, ResponseCodeEnum } from 'src/common/00.enum/consts';
 import { eq, first, map, omit } from 'lodash';
-import { UserEntity } from 'src/entities/user.entity';
 import { UserIdentity } from './identity.service';
 import { user } from 'src/common/00.enum/permission.enum';
+import { UserEntity } from 'src/entities';
 
 @Injectable()
 export abstract class BaseService<T extends CBaseEntity, R extends BaseRepository<T>> implements IBaseService<T> {

@@ -1,12 +1,11 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { PermissionEntity } from './permission.entity';
-import { CBaseEntity } from './base.entity';
+import { RoleEntity } from '../02.role/role.entity';
+
+import { CBaseEntity } from '../base.entity';
+import { PermissionEntity } from '../03.permission/permission.entity';
 
 
 @Entity({ name: 'role_permission' })
-@Index(['roleId', 'permissionId'])
-@Index(['roleId'])
 export class RolePermissionEntity extends CBaseEntity {
     
     @Column({ comment: 'Id của vai trò' })

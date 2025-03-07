@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dtos/create-user.dto';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from 'src/entities/01.user/user.entity';
 import * as bcrypt from 'bcrypt';
 import { DataSource, FindManyOptions } from 'typeorm';
 import { first } from 'lodash';

@@ -1,11 +1,11 @@
 /* eslint-disable prefer-const */
 import { Injectable } from '@nestjs/common';
-import { PermissionEntity } from 'src/entities/permission.entity';
+import { PermissionEntity } from 'src/entities/03.permission/permission.entity';
 
 
 import { DataSource } from 'typeorm';
 import { BaseRepository } from './base.repository';
-import { RolePermissionEntity } from 'src/entities/role-permission.entity';
+import { RolePermissionEntity } from 'src/entities/05.role-permission/role-permission.entity';
 
 export class RolePermissionFindByRoleIds {
     roleIds: number[];

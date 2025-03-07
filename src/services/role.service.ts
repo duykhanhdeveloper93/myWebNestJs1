@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleRepository } from '../repositories/role.repository';
 import { UserRepository } from '../repositories/user.repository';
@@ -6,6 +6,10 @@ import { PermissionRepository } from '../repositories/permission.repository';
 import { PageSizeEnum } from 'src/common/00.enum/page-size.enum';
 import { RoleEntity } from 'src/entities';
 import { CPaginateOptions, CPaginateResult } from './99.query-builder/query-builder.service';
+import { BaseService } from './base.service';
+import { REQUEST } from '@nestjs/core';
+import { DataSource } from 'typeorm';
+import { CRequest } from './base.service.type';
 
 
 export interface RoleFindOptions extends CPaginateOptions<RoleEntity> {
@@ -15,12 +19,14 @@ export interface RoleFindOptions extends CPaginateOptions<RoleEntity> {
 
 
 @Injectable()
-export class RoleService {
+export class RoleService extends BaseService<RoleEntity, RoleRepository> {
   constructor(
-    private readonly roleRepository: RoleRepository,
-    private readonly userRepository: UserRepository,
-    private readonly permissionRepository: PermissionRepository,
-  ) {}
+    protected roleRepository: RoleRepository,
+    private dataSource: DataSource,
+    @Inject(REQUEST) request: CRequest,
+  ) {
+    super(request, roleRepository);
+  }
 
   async findAll() {
     return this.roleRepository.find({ relations: ['permissions', 'users'] });
@@ -40,7 +46,7 @@ export class RoleService {
       // Apply filters
       if (options.keyword) {
         queryBuilder.where(
-          '(user.loginName LIKE :keyword OR user.fullName LIKE :keyword)',
+          '(role.name LIKE :keyword OR role.name LIKE :keyword)',
           { keyword: `%${options.keyword}%` }
         );
       }
@@ -48,7 +54,7 @@ export class RoleService {
       
       // Apply sorting
       if (options.sortBy) {
-        queryBuilder.orderBy(`user.${options.sortBy}`, options.sortOrder || 'ASC');
+        queryBuilder.orderBy(`role.${options.sortBy}`, options.sortOrder || 'ASC');
       }
   
       // Apply pagination

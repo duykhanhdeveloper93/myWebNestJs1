@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../dtos/create-user.dto';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from 'src/entities/01.user/user.entity';
 import * as bcrypt from 'bcrypt';
 import { DataSource, FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { first } from 'lodash';
@@ -68,19 +68,25 @@ export class UserService extends BaseService<UserEntity, UserRepository> {
   }
 
   async addNewUser(createUserDto: CreateUserDto) {
+    const userExist = await this.findOne(createUserDto.username);
+    if(userExist) {
+    
+      return { data : null, status: false,message: "Username đã tồn tại trong hệ thống"};
+    }
     const saltRounds = 10; // Độ phức tạp của mã hóa
     const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
-    console.log("xxxxxxxxx1")
     const currentUser = this.getCurrentUser();
     createUserDto.createdAt = new Date();
     createUserDto.createdBy = currentUser;
+    createUserDto.passwordHash = hashedPassword;
     const user : UserEntity = this.userRepository.create(createUserDto);
-    console.log("xxxxxxxxx2" + user.username)
-    console.log("xxxxxxxxx2" + user.firstName)
+
     try {
       this.userRepository.save(user);
+      return { data : null,status: true, message: "Tạo người dùng thành công"};
     } catch (error) {
       console.log(error)
+     
     }
      
   }

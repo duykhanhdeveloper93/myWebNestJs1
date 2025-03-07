@@ -5,7 +5,7 @@ import { LoginDto } from 'src/dtos/auth.dto';
 import { CRequest } from 'src/services/base.service.type';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/decorators/user.decorator';
-import { UserEntity } from '../entities/user.entity';
+import { UserEntity } from '../entities/01.user/user.entity';
 import { Public } from 'src/decorators/public.decorator';
 import { PermissionDecorators } from 'src/decorators';
 import { Permission } from 'src/common/00.enum/permission.enum';

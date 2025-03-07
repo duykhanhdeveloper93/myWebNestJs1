@@ -1,11 +1,27 @@
-import { Entity, Column, OneToMany } from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { CBaseEntity } from './base.entity';
-import { UserRoleEntity } from './user_role.entity';
+import { Entity, Column, OneToMany, Generated, PrimaryColumn } from 'typeorm';
+import { RoleEntity } from '../02.role/role.entity';
+import { bigint, CBaseEntity } from '../base.entity';
+import { UserRoleEntity } from '../04.user-role/user-role.entity';
 import { Exclude } from 'class-transformer';
 
-@Entity('user')
+
+// user.entity.ts
+export interface IUser {
+  id: number;
+  // Các thuộc tính khác mà bạn cần
+}
+
+
+
+@Entity('user', {
+  synchronize: false,
+})
 export class UserEntity extends CBaseEntity {
+
+  @Generated('increment')
+  @PrimaryColumn('bigint', { transformer: [bigint] })
+  id!: number;
+
   @Column()
   username: string;
 

@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { commonProviders } from './common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
 
 import { myWebApiControllers } from './controllers';
 import { coreServices } from './services';

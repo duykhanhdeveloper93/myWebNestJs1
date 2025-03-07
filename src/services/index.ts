@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 import { StartUpService } from './startup.service';
 import { IdentityService } from './identity.service';
 import { CrytoService } from './cryto.service';
+import { ArticleService } from './article.service';
 
 
 export * from './role.service';
@@ -18,6 +19,8 @@ export * from './permission.service';
 export * from './auth.service';
 export * from './CacheManager';
 export * from './cryto.service';
+export * from './article.service';
+
 
 export const coreServices = [
     UserService,
@@ -29,5 +32,6 @@ export const coreServices = [
     StartUpService,
     IdentityService,
     CrytoService,
+    ArticleService
 
 ];

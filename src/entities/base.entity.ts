@@ -14,7 +14,7 @@ import {
     Index
 } from 'typeorm';
 
-import { UserEntity } from './user.entity';
+import { UserEntity } from './01.user/user.entity';
 
 export const bigint: ValueTransformer = {
     to: (entityValue: number) => entityValue,

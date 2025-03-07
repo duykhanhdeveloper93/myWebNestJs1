@@ -25,7 +25,7 @@ async function bootstrap() {
     await permissionService.seedPermissions(); // Khởi tạo dữ liệu permissions
 
     const startUpService = await app.get(StartUpService);
-   await startUpService.createRootUser(userAdmin); // Khởi tạo root user
+    await startUpService.createRootUser(userAdmin); // Khởi tạo root user
 
     const globalPrefix = 'api/v1';
     app.setGlobalPrefix(globalPrefix);

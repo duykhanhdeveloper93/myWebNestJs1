@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Request, ParseIntPipe, UseGuards, Query  } from '@nestjs/common';
 import { UserFindOptions, UserService } from '../services/user.service';
 import { CreateUserDto, createUserValidation } from 'src/dtos/create-user.dto';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from 'src/entities/01.user/user.entity';
 import { Public } from 'src/decorators/public.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
 

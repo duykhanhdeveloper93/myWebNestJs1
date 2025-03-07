@@ -7,10 +7,6 @@ import { ApiOperation } from '@nestjs/swagger';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Get()
-  findAll() {
-    return this.roleService.findAll();
-  }
 
   @Post()
   create(@Body() createRoleDto) {
@@ -21,7 +17,6 @@ export class RoleController {
 
     
     @Get()
-    @Public()
     @ApiOperation({ summary: 'Lấy danh sách user có phân trang và filter' })
     async getUsers(@Query() options: RoleFindOptions) {
       return await this.roleService.findAllPaginated(options);

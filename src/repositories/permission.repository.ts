@@ -1,5 +1,5 @@
 
-import { PermissionEntity } from '../entities/permission.entity';
+import { PermissionEntity } from '../entities/02.permission/permission.entity';
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from './base.repository';
 

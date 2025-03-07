@@ -10,7 +10,7 @@ import {
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { Request, Response } from 'express';
-import { UserEntity } from 'src/entities/user.entity';
+import { UserEntity } from 'src/entities/01.user/user.entity';
 import { Permission } from 'src/common/00.enum/permission.enum';
 
 export interface CRequest extends Request {

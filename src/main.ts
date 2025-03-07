@@ -22,10 +22,10 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     const permissionService = app.get(PermissionService);
-    await permissionService.seedPermissions(); // Khởi tạo dữ liệu permissions
+   // await permissionService.seedPermissions(); // Khởi tạo dữ liệu permissions
 
     const startUpService = await app.get(StartUpService);
-   await startUpService.createRootUser(userAdmin); // Khởi tạo root user
+    await startUpService.createRootUser(userAdmin); // Khởi tạo root user
 
     const globalPrefix = 'api/v1';
     app.setGlobalPrefix(globalPrefix);

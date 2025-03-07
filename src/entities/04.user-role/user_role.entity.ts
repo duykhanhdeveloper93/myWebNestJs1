@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, BaseEntity, ManyToOne, JoinColumn } from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { CBaseEntity } from './base.entity';
-import { UserEntity } from './user.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { CBaseEntity } from '../base.entity';
+import { UserEntity } from '../01.user/user.entity';
+import { RoleEntity } from '../03.role/role.entity';
+
 
 @Entity({ name: 'user_role' })
 export class UserRoleEntity extends CBaseEntity{

@@ -1,7 +1,6 @@
 import { Entity, Column, OneToMany } from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { CBaseEntity } from './base.entity';
-import { UserRoleEntity } from './user_role.entity';
+import { CBaseEntity } from '../base.entity';
+import { UserRoleEntity } from '../04.user-role/user_role.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity('user')

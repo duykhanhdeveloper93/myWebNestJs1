@@ -5,6 +5,8 @@ import { RoleRepository } from './role.repository';
 import { UserRepository } from './user.repository';
 import { PermissionRepository } from './permission.repository';
 import { RolePermissionRepository } from './role-permission.repository';
+import { ArticleRepository } from './article.repository';
+
 
 export * from './base.repository';
 export * from './role.repository';
@@ -18,5 +20,7 @@ export const myWebApiRepositories = [
    PermissionRepository,
    BaseRepository,
    RolePermissionRepository,
-   UserRepository
+   UserRepository,
+   ArticleRepository
+
 ];

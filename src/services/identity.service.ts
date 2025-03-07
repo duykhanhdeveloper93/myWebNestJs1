@@ -6,9 +6,9 @@ import { Permission, redisConsts, redisTtl } from '../common';
 import { UserEntity } from '../entities';
 import { UserRepository } from '../repositories';
 import { RCacheManager } from './CacheManager';
-import { UserRoleEntity } from '../entities/user_role.entity';
+import { UserRoleEntity } from '../entities/04.user-role/user_role.entity';
 import { UserRoleRepository } from '../repositories/user-role.repository';
-import { RolePermissionEntity } from '../entities/role-permission.entity';
+import { RolePermissionEntity } from '../entities/05.role-permission/role-permission.entity';
 import { RolePermissionRepository } from '../repositories/role-permission.repository';
 import { permissions } from 'src/common/03.seeding';
 

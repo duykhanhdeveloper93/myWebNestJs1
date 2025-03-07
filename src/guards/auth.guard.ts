@@ -58,7 +58,6 @@ export class AuthGuard implements CanActivate {
   async canActiveWithInternal(request: CRequest) {
     this.extractTokenFromHeader(request);
     const accessToken = this.extractToken(request);
-    console.log("accessToken: ===>" + accessToken)
     try {
       if (!accessToken) {
         throw new UnauthorizedException(ResponseCodeEnum.REQUIRE_SIGN_IN);

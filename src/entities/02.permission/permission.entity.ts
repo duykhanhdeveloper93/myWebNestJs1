@@ -1,7 +1,7 @@
-import { Entity, Column, ManyToMany, BaseEntity, OneToMany } from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { CBaseEntity } from './base.entity';
-import { RolePermissionEntity } from './role-permission.entity';
+import { Column, Entity, OneToMany } from "typeorm"
+import { CBaseEntity } from "../base.entity"
+import { RolePermissionEntity } from "../05.role-permission/role-permission.entity"
+
 
 
 @Entity({ name: 'permission' })

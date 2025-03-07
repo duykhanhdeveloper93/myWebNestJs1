@@ -1,11 +1,11 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { PermissionEntity } from './permission.entity';
-import { CBaseEntity } from './base.entity';
+import { CBaseEntity } from '../base.entity';
 
+import { RoleEntity } from '../03.role/role.entity';
+import { PermissionEntity } from '../02.permission/permission.entity';
 
 @Entity({ name: 'role_permission' })
-@Index(['roleId', 'permissionId'])
+@Index(['roleId', 'permissionId', 'siteId'])
 @Index(['roleId'])
 export class RolePermissionEntity extends CBaseEntity {
     
@@ -14,6 +14,10 @@ export class RolePermissionEntity extends CBaseEntity {
 
     @Column({ comment: 'Id của quyền' })
     public permissionId: number;
+
+    @Column({ comment: 'Id của site' })
+    public siteId: number;
+
 
 
     @ManyToOne(() => RoleEntity, (role) => role.rolePermissions, {

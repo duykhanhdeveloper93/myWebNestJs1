@@ -5,6 +5,7 @@ import { CBaseEntity } from '../base.entity';
 import { PermissionEntity } from '../03.permission/permission.entity';
 
 
+
 @Entity({ name: 'role_permission' })
 export class RolePermissionEntity extends CBaseEntity {
     

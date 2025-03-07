@@ -1,4 +1,4 @@
-
+import { Exclude } from 'class-transformer';
 import {
     BaseEntity,
     CreateDateColumn,
@@ -11,9 +11,9 @@ import {
     JoinColumn,
     AfterInsert,
     AfterUpdate,
-    Index
+    Index,
+    Column,
 } from 'typeorm';
-
 import { UserEntity } from './01.user/user.entity';
 
 export const bigint: ValueTransformer = {
@@ -48,7 +48,10 @@ export class CBaseEntity extends BaseEntity {
     /**
      * Sử dụng cho softDelete
      */
-   
+    @Exclude({ toClassOnly: true })
+    @DeleteDateColumn({ select: false })
+    deletedAt?: Date;
+
     @AfterInsert()
     @AfterUpdate()
     updateStatus() {

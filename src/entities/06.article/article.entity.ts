@@ -15,7 +15,7 @@ export class ArticleEntity extends CBaseEntity {
     createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'author' })
-  author?: UserEntity;
+  author?: number;
 
   @Column()
   status: number;

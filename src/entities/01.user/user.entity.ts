@@ -5,12 +5,6 @@ import { UserRoleEntity } from '../04.user-role/user-role.entity';
 import { Exclude } from 'class-transformer';
 
 
-// user.entity.ts
-export interface IUser {
-  id: number;
-  // Các thuộc tính khác mà bạn cần
-}
-
 
 
 @Entity('user', {

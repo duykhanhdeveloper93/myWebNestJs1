@@ -62,7 +62,7 @@ if (environment.enableRedis) {
       database: dbName,
       synchronize: true,
       entities,
-      
+      connectorPackage: 'mysql2',
       timezone: 'local',
       cache: false,
   }),

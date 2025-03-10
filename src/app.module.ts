@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { myWebApiControllers } from './controllers';
 import { myWebApiEntities } from './entities';
-import { coreServices } from './services';
+import { coreServices, PermissionService, StartUpService } from './services';
 import { CoreModule } from './core.module';
 import { environment } from './common/02.environment';
 import { coreStrategy } from './strategies/index';
 import { RouterModule, Routes } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { expiresIn, jwtConstants } from './common/00.enum';
+import { expiresIn, jwtConstants, userAdmin } from './common/00.enum';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { myWebApiRepositories } from './repositories';
@@ -83,4 +82,18 @@ if (environment.enableRedis) {
     ...coreGuards
   ],
 })
-export class AppModule {}
+export class AppModule {
+
+  constructor(
+    private readonly permissionService: PermissionService,
+    private readonly  startUpService: StartUpService) 
+   {}
+
+    async onApplicationBootstrap(): Promise<void> {
+        // only process 0 can seed data.
+        await this.permissionService.seedPermissions(); // Khởi tạo dữ liệu permissions
+        await this.startUpService.createRootUser(userAdmin); // Khởi tạo root user
+    }
+
+ 
+}

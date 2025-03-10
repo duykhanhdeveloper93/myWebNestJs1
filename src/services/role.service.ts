@@ -1,9 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-
-import { PermissionRepository } from '../repositories/permission.repository';
-import { PageSizeEnum } from 'src/common/00.enum/page-size.enum';
-
 import { CPaginateOptions } from './99.query-builder/query-builder.service';
 import { RoleRepository } from 'src/repositories/role.repository';
 import { RoleEntity } from 'src/entities/03.role/role.entity';

@@ -121,5 +121,4 @@ export interface IBaseService<T> {
      * @param siteId
      * @returns
      */
-    canAccessSite(siteId: number): boolean;
 }

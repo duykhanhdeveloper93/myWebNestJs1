@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import {
-    DataSource,
     DeepPartial,
     DeleteResult,
     FindManyOptions,
@@ -13,15 +13,16 @@ import {
 } from 'typeorm';
 
 
+import { eq, first, map, omit } from 'lodash';
+
+
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { CRequest, GetAllResult, GetListResult, IBaseService, OmitSave } from './base.service.type';
+import { Permission, user, PAGE_SIZE, ResponseCodeEnum } from 'src/common';
+import { UserEntity } from 'src/entities';
 import { CBaseEntity } from 'src/entities/base.entity';
-import { BaseRepository } from 'src/repositories/base.repository';
-import { PAGE_SIZE, ResponseCodeEnum } from 'src/common/00.enum/consts';
-import { eq, first, map, omit } from 'lodash';
-import { UserEntity } from 'src/entities/01.user/user.entity';
-import { UserIdentity } from './identity.service';
-import { user } from 'src/common/00.enum/permission.enum';
+import { CBadRequestException } from 'src/exception/badrequest.exception';
+import { BaseRepository } from 'src/repositories';
 
 @Injectable()
 export abstract class BaseService<T extends CBaseEntity, R extends BaseRepository<T>> implements IBaseService<T> {
@@ -31,33 +32,14 @@ export abstract class BaseService<T extends CBaseEntity, R extends BaseRepositor
      */
     constructor(private readonly request: CRequest, protected repository: R) {}
 
-    canAccessSite(siteId: number) {
-        if (!siteId) return false;
-        const currentUser = this.getCurrentUser();
-        // const isAdmin = currentUser.isAdmin;
-        // const isMemberOfSite = eq(currentUser.site?.id, +siteId);
-        // return isAdmin || isMemberOfSite;
-        return true;
-    }
+
 
     getCurrentUser(): UserEntity & {
-      
+        pers: Permission[];
         cId?: number;
     } {
-        return this.request?.user  || user;
+        return this.request?.user || user;
     }
-
-    // isSuperAdmin() {
-    //     const currentUser = this.getCurrentUser();
-    //     const isAdmin = currentUser?.pers?.includes(Permission.SuperAdmin) || currentUser?.isSys;
-    //     return !!isAdmin;
-    // }
-
-    // getCurrentSiteUser() {
-    //     const currentUser = this.getCurrentUser();
-    //     const { site } = currentUser;
-    //     return site ? site : null;
-    // }
 
     async softDelete(id: number): Promise<boolean> {
         const result = await this.repository.softDelete(id);
@@ -83,6 +65,13 @@ export abstract class BaseService<T extends CBaseEntity, R extends BaseRepositor
         return !!result.affected;
     }
 
+    /**
+     *
+     * @param query
+     * @returns
+     *
+     * @see https://github.com/typeorm/typeorm/issues/4998
+     */
     getTotal(query?: FindManyOptions<T>): Promise<number> {
         return this.repository.count(query);
     }
@@ -221,7 +210,31 @@ export abstract class BaseService<T extends CBaseEntity, R extends BaseRepositor
                     id: id,
                 } as FindOptionsWhere<T>);
             }
-            // throw new CBadRequestException(ResponseCodeEnum.NOT_FOUND);
+            throw new CBadRequestException(ResponseCodeEnum.NOT_FOUND);
+        } catch (error) {
+            this.catchError(error);
+        }
+    }
+
+    async updateByQuery(
+        query: FindOptionsWhere<T>,
+        data: QueryDeepPartialEntity<T>,
+        options?: { reload: boolean },
+    ): Promise<T | null> {
+        const currentUser = this.getCurrentUser();
+        const reload = options?.reload || true;
+        try {
+            const record = await this.repository.update(query, {
+                ...omit(data, 'id'),
+                modifiedBy: currentUser,
+            } as QueryDeepPartialEntity<T>);
+            if (record) {
+                if (!reload) return true as any;
+                return this.repository.findOneBy({
+                    id: query,
+                } as FindOptionsWhere<T>);
+            }
+            throw new CBadRequestException(ResponseCodeEnum.NOT_FOUND);
         } catch (error) {
             this.catchError(error);
         }
@@ -251,7 +264,7 @@ export abstract class BaseService<T extends CBaseEntity, R extends BaseRepositor
 
     public catchError(error: { code: ResponseCodeEnum }) {
         if (error?.code === ResponseCodeEnum.ER_DUP_ENTRY) {
-            // throw new CBadRequestException(ResponseCodeEnum.ER_DUP_ENTRY);
+            throw new CBadRequestException(ResponseCodeEnum.ER_DUP_ENTRY);
         }
         throw error;
     }
@@ -264,15 +277,15 @@ export abstract class BaseService<T extends CBaseEntity, R extends BaseRepositor
         return await this.repository.restore(data);
     }
 
-    // acquirePer(...permissions: Permission[]) {
-    //     const currentUser = this.getCurrentUser();
-    //     if (!currentUser) {
-    //         return false;
-    //     }
-    //     const c1 = currentUser.pers.find((per) => {
-    //         return permissions.includes(per);
-    //     });
-    //     const c2 = currentUser.isSys;
-    //     return !!c1 || c2;
-    // }
+    acquirePer(...permissions: Permission[]) {
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) {
+            return false;
+        }
+        const c1 = currentUser.pers.find((per) => {
+            return permissions.includes(per);
+        });
+        const c2 = currentUser.isSys;
+        return !!c1 || c2;
+    }
 }

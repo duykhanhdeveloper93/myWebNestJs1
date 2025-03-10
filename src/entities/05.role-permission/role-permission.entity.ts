@@ -5,8 +5,6 @@ import { RoleEntity } from '../03.role/role.entity';
 import { PermissionEntity } from '../02.permission/permission.entity';
 
 @Entity({ name: 'role_permission' })
-@Index(['roleId', 'permissionId', 'siteId'])
-@Index(['roleId'])
 export class RolePermissionEntity extends CBaseEntity {
     
     @Column({ comment: 'Id của vai trò' })

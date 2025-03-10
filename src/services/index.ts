@@ -20,10 +20,11 @@ export * from './permission.service';
 export * from './auth.service';
 export * from './CacheManager';
 export * from './cryto.service';
-
+export * from './article.service';
 
 
 export const coreServices = [
+    ArticleService,
     UserService,
     RoleService,
     PermissionService,
@@ -33,6 +34,5 @@ export const coreServices = [
     StartUpService,
     IdentityService,
     CrytoService,
-    ArticleService
-
+    
 ];

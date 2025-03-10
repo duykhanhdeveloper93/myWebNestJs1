@@ -39,7 +39,11 @@ export class UserController {
   async createUser(@Body(new JoiValidationPipe(createUserValidation)) item: CreateUserDto) {
       try {
         const newUser = await this.userService.addNewUser(item);
-        return newUser;
+        const data : any = {
+          data : newUser,
+          status: true
+        }
+        return data;
       } catch (error) {
         throw new CBadRequestException('Lỗi hệ thống');
       }

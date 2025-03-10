@@ -6,10 +6,10 @@ import { RolePermissionEntity } from "../05.role-permission/role-permission.enti
 
 @Entity({ name: 'permission' })
 export class PermissionEntity extends CBaseEntity {
-  @Column({ nullable: false, length: 255, type: 'varchar' , comment: 'Tên của quyền' })
+  @Column({ nullable: false, length: 255, comment: 'Tên của quyền' })
   name: string
 
-  @Column({ nullable: true, length: 255, type: 'varchar' , comment: 'Mô tả của quyền' })
+  @Column({ nullable: true, length: 255,  comment: 'Mô tả của quyền' })
   desc: string
 
   @OneToMany(() => RolePermissionEntity, (role) => role.permission,{

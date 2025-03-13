@@ -8,7 +8,8 @@ import { BaseService } from './base.service';
 import { CreateArticleDto } from 'src/dtos/create-article.dto';
 import { ArticleEntity } from 'src/entities/06.article/article.entity';
 import { ArticleRepository } from 'src/repositories/article.repository';
-
+import { join } from 'path';
+import * as fs from 'fs';
 
 
 
@@ -24,7 +25,7 @@ export class ArticleService extends BaseService<ArticleEntity, ArticleRepository
         @InjectRepository(ArticleEntity) repository: ArticleRepository,
         private readonly articleRepository: ArticleRepository,
     ) {
-        console.log("repository"+ repository)
+       
         super(request, repository);
     }
 
@@ -39,8 +40,12 @@ export class ArticleService extends BaseService<ArticleEntity, ArticleRepository
 
     async search(options: ArticleFindOptions) {
       const [items, count] = await this.articleRepository.search(options);
+      console.log("zzzzzzzz")
       return { items: items, count: count };
     }
   
+
+
+   
 
 }

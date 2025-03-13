@@ -11,6 +11,8 @@ export class ArticleEntity extends CBaseEntity {
   @Column({ nullable: true, length: 255, type: 'varchar' , comment: 'Nội dung báo' })
   content: string
 
+  @Column({ nullable: true, length: 1000, type: 'varchar' , comment: 'Đường dẫn file' })
+  image_title_path: string
   
   @Column({ nullable: true, comment: 'Trạng thái' })
   status: number

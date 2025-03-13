@@ -8,6 +8,7 @@ import { coreServices } from './services';
 import { myWebApiRepositories } from './repositories';
 import { myWebApiEntities } from './entities';
 import { coreStrategy } from './strategies/index';
+import { UploadModule } from './modules/upload/upload.module';
 
 /**
  * define repositories are registered in the current scrope of module.
@@ -17,10 +18,11 @@ import { coreStrategy } from './strategies/index';
  * Ref: https://docs.nestjs.com/techniques/database#repository-pattern
  */
 const modules = [TypeOrmModule.forFeature([...myWebApiEntities])];
-
+const moduleUpload = [UploadModule]; // cÁI NÀY ĐÉO CẦN NHÉ
 @Module({
     imports: [
-        ...modules
+        ...modules,
+        ...moduleUpload
     ],
     controllers: [...myWebApiControllers],
     providers: [...myWebApiRepositories, ...coreServices , ...coreStrategy],

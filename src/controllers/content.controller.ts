@@ -102,7 +102,35 @@ export class ContentController {
       }
     }
     
-
+    @Post('/upload-base64')
+    async uploadBase64File(
+      @Body('base64') base64: string,
+      @Body('fileName') fileName: string, // Tên file từ client
+    ) {
+      try {
+        // Tạo thư mục nếu chưa tồn tại
+        const uploadPath = './uploads';
+        if (!fs.existsSync(uploadPath)) {
+          fs.mkdirSync(uploadPath, { recursive: true });
+        }
+  
+        // Lưu file từ Base64
+        const fileExtension = fileName.split('.').pop(); // Lấy extension từ tên file
+        const newFileName = `${Date.now()}.${fileExtension}`; // Tạo tên file duy nhất
+        const filePath = join(uploadPath, newFileName);
+        const base64Data = base64.replace(/^data:.+;base64,/, ''); // Loại bỏ tiền tố Base64
+        fs.writeFileSync(filePath, base64Data, { encoding: 'base64' });
+  
+        return {
+          status: true,
+          message: 'Upload Base64 thành công',
+          filePath: `/uploads/${newFileName}`, // Trả về đường dẫn file
+        };
+      } catch (error) {
+        return { status: false, message: 'Lỗi hệ thống', error };
+      }
+    }
+  
     
   
     @Delete('/deleteFile/:id')

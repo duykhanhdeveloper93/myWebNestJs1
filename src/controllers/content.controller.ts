@@ -114,17 +114,19 @@ export class ContentController {
           fs.mkdirSync(uploadPath, { recursive: true });
         }
   
+        console.log("base64: " + base64)
+        console.log("fileName: " + fileName)
         // Lưu file từ Base64
-        const fileExtension = fileName.split('.').pop(); // Lấy extension từ tên file
-        const newFileName = `${Date.now()}.${fileExtension}`; // Tạo tên file duy nhất
-        const filePath = join(uploadPath, newFileName);
+       
+        console.log("222")
+        const filePath = join(uploadPath, fileName);
         const base64Data = base64.replace(/^data:.+;base64,/, ''); // Loại bỏ tiền tố Base64
         fs.writeFileSync(filePath, base64Data, { encoding: 'base64' });
-  
+        console.log("333")
         return {
           status: true,
           message: 'Upload Base64 thành công',
-          filePath: `/uploads/${newFileName}`, // Trả về đường dẫn file
+          filePath: `/uploads/${fileName}`, // Trả về đường dẫn file
         };
       } catch (error) {
         return { status: false, message: 'Lỗi hệ thống', error };

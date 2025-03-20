@@ -8,12 +8,11 @@ import { Permission } from 'src/common/00.enum/permission.enum';
 export class PermissionGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
     canActivate(context: ExecutionContext): boolean {
-        console.log("check Permission Guard 1")
+       
         const requiredPers = this.reflector.getAllAndOverride<Permission[]>(PER_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);
-        console.log("check Permission Guard 2")
         if (!requiredPers) {
             return true;
         }

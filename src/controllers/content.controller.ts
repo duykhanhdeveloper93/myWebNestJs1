@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param, Query, UploadedFile, UseInterceptors, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UploadedFile, UseInterceptors, Delete, HttpCode, ParseIntPipe, Res } from '@nestjs/common';
 import { RoleFindOptions, RoleService } from '../services/role.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createArticleValidation, CreateArticleDto } from 'src/dtos/create-article.dto';
 import { CBadRequestException } from 'src/exception/badrequest.exception';
 import { JoiValidationPipe } from 'src/pipe';
@@ -13,6 +13,7 @@ import { Public } from 'src/decorators';
 
 
 @Controller('content')
+@ApiTags('content')
 export class ContentController {
   constructor(private readonly roleService: RoleService,
     private readonly articleService: ArticleService
@@ -32,21 +33,32 @@ export class ContentController {
           throw new CBadRequestException('Lỗi hệ thống');
         }
     }
-    
-    @Post()
-    @ApiOperation({ summary: 'Lấy danh sách article có phân trang và filter' })
-    async getArticles(@Query() options: ArticleFindOptions) {
-      return await this.articleService.search(options);
-    }
 
+    @Get(':id')
+    @HttpCode(200)
+    @ApiOperation({ summary: 'Find by id' })
+    async findOne(@Param('id', ParseIntPipe) id: number) {
+          const article = await this.articleService.getById(id);
+          if(article.id != null) {
+            return {data : article , status: true};
+          } else {
+            return {data : null , status: false};
+          }
+         
+       
+    }
 
     
     @HttpCode(200)
     @Post('/search')
     @ApiOperation({ summary: 'Get list.' })
     async getMany(@Body() options?: ArticleFindOptions) {
-        const items = await this.articleService.search(options);
-        return items;
+      const listData = await this.articleService.search(options);
+      if(listData != null) {
+        return {data : listData , status: true};
+      } else {
+        return {data : null , status: false};
+      }
     }
 
     
@@ -130,6 +142,18 @@ export class ContentController {
         };
       } catch (error) {
         return { status: false, message: 'Lỗi hệ thống', error };
+      }
+    }
+
+
+    @Get('/image/:filename')
+    @Public()
+    getImage(@Param('filename') filename: string, @Res() res) {
+      const filePath = join(__dirname, '../../uploads', filename);
+      if (fs.existsSync(filePath)) {
+        return res.sendFile(filePath);
+      } else {
+        return res.status(404).send('File not found');
       }
     }
   

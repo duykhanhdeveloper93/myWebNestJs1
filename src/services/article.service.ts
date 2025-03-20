@@ -40,7 +40,6 @@ export class ArticleService extends BaseService<ArticleEntity, ArticleRepository
 
     async search(options: ArticleFindOptions) {
       const [items, count] = await this.articleRepository.search(options);
-      console.log("zzzzzzzz")
       return { items: items, count: count };
     }
   

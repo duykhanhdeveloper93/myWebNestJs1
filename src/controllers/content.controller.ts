@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, UploadedFile, UseInterceptors, Delete, HttpCode, ParseIntPipe, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UploadedFile, UseInterceptors, Delete, HttpCode, ParseIntPipe, Res, BadRequestException } from '@nestjs/common';
 import { RoleFindOptions, RoleService } from '../services/role.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { createArticleValidation, CreateArticleDto } from 'src/dtos/create-article.dto';
@@ -43,11 +43,44 @@ export class ContentController {
             return {data : article , status: true};
           } else {
             return {data : null , status: false};
-          }
-         
-       
+          } 
     }
 
+
+    @Post('delete-many')
+    @HttpCode(200)
+    @ApiOperation({ summary: 'Delete multiple articles by ids' })
+    async deleteMany(@Body() payload: { ids: number[] }) {
+        if (!payload.ids || !Array.isArray(payload.ids) || payload.ids.length === 0) {
+            throw new BadRequestException('Vui lòng cung cấp mảng các id hợp lệ');
+        }
+
+        let successCount = 0;
+        const failedIds = [];
+
+        for (const id of payload.ids) {
+            try {
+                const result = await this.articleService.delete(id);
+                if (result) {
+                    successCount++;
+                } else {
+                    failedIds.push(id);
+                }
+            } catch (error) {
+                failedIds.push(id);
+            }
+        }
+
+        return {
+            status: successCount > 0,
+            message: `Đã xóa thành công ${successCount}/${payload.ids.length} article`,
+            data: {
+                successCount,
+                totalCount: payload.ids.length,
+                failedIds: failedIds.length > 0 ? failedIds : []
+            }
+        };
+    }
     
     @HttpCode(200)
     @Post('/search')
@@ -100,9 +133,9 @@ export class ContentController {
           }
         }
     
-        article.image_title_path = `${id}-${file.filename}`;
+        article.image_title_path = `${file.filename}`;
         await this.articleService.update(id, article);
-        const absoluteFilePath = join(__dirname, '../../uploads', `${id}-${file.filename}`);
+        const absoluteFilePath = join(__dirname, '../../uploads', `${file.filename}`);
         console.log("absoluteFilePath: " + absoluteFilePath)
         return {
           status: true,
@@ -126,15 +159,13 @@ export class ContentController {
           fs.mkdirSync(uploadPath, { recursive: true });
         }
   
-        console.log("base64: " + base64)
-        console.log("fileName: " + fileName)
         // Lưu file từ Base64
        
-        console.log("222")
+
         const filePath = join(uploadPath, fileName);
         const base64Data = base64.replace(/^data:.+;base64,/, ''); // Loại bỏ tiền tố Base64
         fs.writeFileSync(filePath, base64Data, { encoding: 'base64' });
-        console.log("333")
+
         return {
           status: true,
           message: 'Upload Base64 thành công',

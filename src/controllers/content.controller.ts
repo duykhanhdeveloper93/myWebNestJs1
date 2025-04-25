@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Query, UploadedFile, UseInterceptors, Delete, HttpCode, ParseIntPipe, Res, BadRequestException } from '@nestjs/common';
 import { RoleFindOptions, RoleService } from '../services/role.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { createArticleValidation, CreateArticleDto } from 'src/dtos/create-article.dto';
+import { createArticleValidation, CreateArticleDto, updateArticleValidation, UpdateArticleDto } from 'src/dtos/create-article.dto';
 import { CBadRequestException } from 'src/exception/badrequest.exception';
 import { JoiValidationPipe } from 'src/pipe';
 import { ArticleFindOptions, ArticleService } from 'src/services';
@@ -26,6 +26,20 @@ export class ContentController {
           const newArticle = await this.articleService.addNewArticle(item);
           const data : any = {
             data : newArticle,
+            status: true
+          }
+          return data;
+        } catch (error) {
+          throw new CBadRequestException('Lỗi hệ thống');
+        }
+    }
+
+    @Post('/updateArticle')
+    async updateArticle(@Body(new JoiValidationPipe(updateArticleValidation)) item: UpdateArticleDto) {
+        try {
+          const updateArticle = await this.articleService.update(item.id,item);
+          const data : any = {
+            data : updateArticle,
             status: true
           }
           return data;
